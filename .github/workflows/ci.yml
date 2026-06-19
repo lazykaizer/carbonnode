@@ -1,0 +1,114 @@
+name: CarbonNode CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Code Quality Checks (Lint)
+        run: npm run lint
+
+      - name: Run Automated Test Suites
+        run: npm run test
+
+      - name: Run Coverage Report
+        run: npx vitest run --coverage
+
+      - name: Post Coverage to PR
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+            const summaryPath = './coverage/coverage-summary.json';
+            if (!fs.existsSync(summaryPath)) {
+              console.log('No coverage summary found.');
+              return;
+            }
+            const summary = JSON.parse(fs.readFileSync(summaryPath, 'utf8'));
+            const total = summary.total;
+            if (!total) return;
+
+            const format = (type) => {
+              const data = total[type];
+              if (!data) return 'N/A';
+              return `${data.pct}% (${data.covered}/${data.total})`;
+            };
+
+            const comment = `### 📊 Code Coverage Report
+            | Category | Percentage |
+            | --- | --- |
+            | **Statements** | ${format('statements')} |
+            | **Branches** | ${format('branches')} |
+            | **Functions** | ${format('functions')} |
+            | **Lines** | ${format('lines')} |
+            
+            *Threshold required: 85%*`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+            });
+
+            const botComment = comments.find(c => c.body.includes('### 📊 Code Coverage Report'));
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body: comment,
+              });
+            }
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
+
+      - name: Production Build Check
+        run: npm run build
+
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright E2E Tests
+        run: npx playwright test
+
+      - name: Run Lighthouse CI
+        run: |
+          npx @lhci/cli@0.13.x collect --staticDistDir=dist/client
+          npx @lhci/cli@0.13.x assert --assertions.performance=0.9
