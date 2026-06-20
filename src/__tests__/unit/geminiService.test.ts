@@ -67,7 +67,7 @@ describe('geminiService', () => {
       ok: true,
       json: async () => ({ activities: [] }),
     });
-    
+
     const result = await analyzeDailyActivity('test');
     expect(result).toEqual({ activities: [] });
     vi.useFakeTimers();
@@ -230,7 +230,7 @@ describe('geminiService', () => {
       ok: true,
       json: async () => ({ activities: [] }),
     });
-    
+
     const startTime = Date.now();
     await analyzeDailyActivity('test');
     const elapsed = Date.now() - startTime;
@@ -244,7 +244,9 @@ describe('geminiService', () => {
     fetchMock.mockResolvedValueOnce({
       ok: false,
       status: 403,
-      json: async () => { throw new Error('Not JSON') },
+      json: async () => {
+        throw new Error('Not JSON');
+      },
     });
 
     await expect(analyzeDailyActivity('test')).rejects.toThrow('HTTP error 403');

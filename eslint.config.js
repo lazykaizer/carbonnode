@@ -20,7 +20,7 @@ export default defineConfig([
       '@typescript-eslint/no-unused-vars': 'error',
       'prefer-const': 'error',
       'no-var': 'error',
-      'eqeqeq': ['error', 'always'],
+      eqeqeq: ['error', 'always'],
       'no-console': ['error', { allow: ['warn', 'error'] }],
     },
     languageOptions: {
