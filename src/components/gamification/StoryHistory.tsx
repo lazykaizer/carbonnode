@@ -1,3 +1,4 @@
+/** Module containing UI components for StoryHistory. */
 import type { CarbonStoryData } from '@/types';
 
 interface StoryHistoryProps {

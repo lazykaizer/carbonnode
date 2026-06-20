@@ -1,3 +1,4 @@
+/** Module containing logic for csrf. */
 import type { Request, Response, NextFunction } from 'express';
 
 // List of allowed origins for the application, matching CORS configuration

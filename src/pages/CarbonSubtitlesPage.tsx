@@ -1,3 +1,4 @@
+/** Module containing UI components for CarbonSubtitlesPage. */
 import { useState, useCallback } from 'react';
 import Sidebar from '@/components/dashboard/Sidebar';
 import Button from '@/components/common/Button';

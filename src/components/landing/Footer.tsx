@@ -1,3 +1,4 @@
+/** Module containing UI components for Footer. */
 import { APP_NAME } from '@/utils/constants';
 import { usePrefersReducedMotion } from '@/hooks/useMediaQuery';
 

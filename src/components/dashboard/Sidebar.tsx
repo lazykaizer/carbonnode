@@ -1,3 +1,4 @@
+/** Module containing UI components for Sidebar. */
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AchievementsModal from '@/components/gamification/AchievementsModal';

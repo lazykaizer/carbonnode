@@ -1,3 +1,4 @@
+/** Module containing UI components for AchievementsModal. */
 import Modal from '@/components/common/Modal';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { formatXp, formatDate } from '@/utils/formatters';

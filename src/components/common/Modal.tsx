@@ -1,3 +1,4 @@
+/** Module containing UI components for Modal. */
 import type { ReactNode } from 'react';
 import { useEffect, useCallback } from 'react';
 import { usePrefersReducedMotion } from '@/hooks/useMediaQuery';

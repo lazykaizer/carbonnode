@@ -1,3 +1,4 @@
+/** Module containing UI components for DashboardPage. */
 import { useMemo, useState, useEffect, useRef, lazy, Suspense } from 'react';
 import Sidebar from '@/components/dashboard/Sidebar';
 import FeatureGrid from '@/components/dashboard/FeatureGrid';

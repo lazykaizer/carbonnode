@@ -1,3 +1,4 @@
+/** Module containing logic for useParticles. */
 import { useEffect } from 'react';
 
 interface Particle {

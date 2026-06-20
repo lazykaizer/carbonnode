@@ -1,3 +1,4 @@
+/** Module containing UI components for FeatureCards. */
 import { useRef } from 'react';
 import { useInView } from '@/hooks/useInView';
 import { FEATURE_PREVIEWS } from '@/utils/constants';

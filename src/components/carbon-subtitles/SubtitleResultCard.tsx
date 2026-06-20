@@ -1,3 +1,4 @@
+/** Module containing UI components for SubtitleResultCard. */
 import Card from '@/components/common/Card';
 import { formatCo2Kg } from '@/utils/formatters';
 import type { SubtitleResult } from '@/types';

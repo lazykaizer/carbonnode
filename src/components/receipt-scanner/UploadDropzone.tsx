@@ -1,3 +1,4 @@
+/** Module containing UI components for UploadDropzone. */
 import type { RefObject } from 'react';
 
 interface UploadDropzoneProps {

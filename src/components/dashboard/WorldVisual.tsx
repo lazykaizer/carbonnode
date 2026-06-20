@@ -1,3 +1,4 @@
+/** Module containing UI components for WorldVisual. */
 import { usePrefersReducedMotion } from '@/hooks/useMediaQuery';
 import { useWorldVisual } from './useWorldVisual';
 

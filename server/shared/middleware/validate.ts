@@ -1,3 +1,4 @@
+/** Module containing logic for validate. */
 import type { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import path from 'path';

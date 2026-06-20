@@ -1,3 +1,4 @@
+/** Module containing logic for rateLimit. */
 import rateLimit from 'express-rate-limit';
 import type { Request } from 'express';
 

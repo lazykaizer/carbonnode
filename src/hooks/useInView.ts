@@ -1,3 +1,4 @@
+/** Module containing logic for useInView. */
 import { useEffect, useState, type RefObject } from 'react';
 
 interface UseInViewOptions {

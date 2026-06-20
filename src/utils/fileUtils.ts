@@ -1,3 +1,4 @@
+/** Module containing logic for fileUtils. */
 import { MAX_FILE_SIZE_BYTES, ALLOWED_FILE_TYPES } from './constants';
 
 /**

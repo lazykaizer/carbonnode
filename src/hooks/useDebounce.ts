@@ -1,3 +1,4 @@
+/** Module containing logic for useDebounce. */
 import { useState, useEffect } from 'react';
 
 /**

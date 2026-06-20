@@ -1,3 +1,4 @@
+/** Module containing UI components for CarbonBudgetCard. */
 import { useState, useMemo, useCallback } from 'react';
 import { FeatureCardShell } from '@/components/dashboard/FeatureGrid';
 import Button from '@/components/common/Button';

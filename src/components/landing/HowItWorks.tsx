@@ -1,3 +1,4 @@
+/** Module containing UI components for HowItWorks. */
 import { useRef } from 'react';
 import { useInView } from '@/hooks/useInView';
 import { HOW_IT_WORKS_STEPS } from '@/utils/constants';

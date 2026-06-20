@@ -1,3 +1,4 @@
+/** Module containing UI components for ErrorBoundary. */
 import { Component, type ReactNode, type ErrorInfo } from 'react';
 import Button from './Button';
 

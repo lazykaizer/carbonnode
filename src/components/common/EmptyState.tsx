@@ -1,3 +1,4 @@
+/** Module containing UI components for EmptyState. */
 import type { ReactNode } from 'react';
 
 interface EmptyStateProps {

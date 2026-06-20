@@ -1,3 +1,4 @@
+/** Module containing UI components for StatItem. */
 interface StatItemProps {
   value: string;
   label: string;

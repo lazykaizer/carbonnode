@@ -1,3 +1,4 @@
+/** Module containing logic for useMediaQuery. */
 import { useState, useEffect } from 'react';
 
 /**

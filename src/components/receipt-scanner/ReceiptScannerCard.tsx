@@ -1,3 +1,4 @@
+/** Module containing UI components for ReceiptScannerCard. */
 import { useRef } from 'react';
 import { FeatureCardShell } from '@/components/dashboard/FeatureGrid';
 import Button from '@/components/common/Button';

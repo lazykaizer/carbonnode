@@ -1,3 +1,4 @@
+/** Module containing UI components for LandingPage. */
 import Navbar from '@/components/landing/Navbar';
 import HeroSection from '@/components/landing/HeroSection';
 import HowItWorks from '@/components/landing/HowItWorks';

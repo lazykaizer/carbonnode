@@ -1,3 +1,4 @@
+/** Module containing UI components for Input. */
 import { type InputHTMLAttributes, forwardRef, type ReactNode } from 'react';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {

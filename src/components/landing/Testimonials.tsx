@@ -1,3 +1,4 @@
+/** Module containing UI components for Testimonials. */
 import { useRef } from 'react';
 import { useInView } from '@/hooks/useInView';
 import { usePrefersReducedMotion } from '@/hooks/useMediaQuery';

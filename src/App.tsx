@@ -1,3 +1,4 @@
+/** Module containing UI components for App. */
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ErrorBoundary from '@/components/common/ErrorBoundary';

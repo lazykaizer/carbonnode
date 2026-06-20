@@ -1,3 +1,4 @@
+/** Module containing UI components for CarbonTimeline. */
 import { useDailyTimeline } from '@/hooks/useDailyTimeline';
 import { formatCo2Kg } from '@/utils/formatters';
 import { INDIA_URBAN_DAILY_KG } from '@/utils/emissionFactors';

@@ -1,3 +1,4 @@
+/** Module containing logic for useCountAnimation. */
 import { useState, useEffect } from 'react';
 
 const FRAME_RATE = 30;

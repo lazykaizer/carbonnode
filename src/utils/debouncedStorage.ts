@@ -1,3 +1,4 @@
+/** Module containing logic for debouncedStorage. */
 import { createJSONStorage } from 'zustand/middleware';
 
 // Keep track of pending timeout IDs for each storage key

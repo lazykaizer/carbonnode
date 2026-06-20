@@ -1,3 +1,4 @@
+/** Module containing UI components for AddEntryForm. */
 import Button from '@/components/common/Button';
 import { CATEGORY_LABELS, CATEGORY_ICONS } from '@/utils/constants';
 import type { CarbonCategory } from '@/types';

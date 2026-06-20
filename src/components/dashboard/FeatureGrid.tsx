@@ -1,3 +1,4 @@
+/** Module containing UI components for FeatureGrid. */
 import { type ReactNode } from 'react';
 import Card from '@/components/common/Card';
 import { usePrefersReducedMotion } from '@/hooks/useMediaQuery';

@@ -1,3 +1,4 @@
+/** Module containing UI components for CtaSection. */
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useInView } from '@/hooks/useInView';

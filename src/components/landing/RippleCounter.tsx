@@ -1,3 +1,4 @@
+/** Module containing UI components for RippleCounter. */
 import { useRef, useCallback } from 'react';
 import { useInView } from '@/hooks/useInView';
 import { formatNumber } from '@/utils/formatters';

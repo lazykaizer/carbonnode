@@ -1,3 +1,4 @@
+/** Module containing UI components for Navbar. */
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { APP_NAME } from '@/utils/constants';

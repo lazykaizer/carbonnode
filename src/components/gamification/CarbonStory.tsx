@@ -1,3 +1,4 @@
+/** Module containing UI components for CarbonStory. */
 import { useState, useMemo, useCallback } from 'react';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { generateCarbonStory } from '@/services/geminiService';

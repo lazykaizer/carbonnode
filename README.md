@@ -108,18 +108,19 @@ Zustand loads persisted state from localStorage. Every field passes through `saf
 
 **2. User logs an activity (any of 5 methods)**
 
-| Method | Input | AI Role |
-|--------|-------|---------|
-| Carbon Mirror | Plain English journal text | Gemini extracts activities, classifies by category, estimates kg CO₂ |
-| Receipt Scanner | Photo of food/grocery receipt | Gemini Vision identifies items, maps to emission factors |
-| Carbon Budget | Manual form entry | No AI — pure calculation from named emission constants |
-| Carbon Subtitles | Any URL | Gemini reads page context, estimates carbon cost of the choice |
-| Carbon Story | Weekly log data | Gemini writes a personalized narrative, rates the week |
+| Method           | Input                         | AI Role                                                              |
+| ---------------- | ----------------------------- | -------------------------------------------------------------------- |
+| Carbon Mirror    | Plain English journal text    | Gemini extracts activities, classifies by category, estimates kg CO₂ |
+| Receipt Scanner  | Photo of food/grocery receipt | Gemini Vision identifies items, maps to emission factors             |
+| Carbon Budget    | Manual form entry             | No AI — pure calculation from named emission constants               |
+| Carbon Subtitles | Any URL                       | Gemini reads page context, estimates carbon cost of the choice       |
+| Carbon Story     | Weekly log data               | Gemini writes a personalized narrative, rates the week               |
 
 **3. Result is stored**
 Each activity becomes a `CarbonEntry` (validated by `CarbonEntrySchema`) and is written to the Zustand store, which persists to localStorage.
 
 **4. Dashboard updates**
+
 - `useDailyTimeline()` re-derives the chart data
 - `useWeeklyStats()` re-derives the summary panel
 - `getWorldStateFromBudget()` maps budget % → world state → Living World re-renders
@@ -128,12 +129,12 @@ Each activity becomes a `CarbonEntry` (validated by `CarbonEntrySchema`) and is 
 **5. Living World reflects cumulative behavior**
 The canvas world state is not cosmetic — it is a direct function of the user's monthly budget consumption percentage:
 
-| Budget Used | World State | Visual |
-|-------------|-------------|--------|
-| 0–30% | Pristine | Clear sky, full forest |
-| 31–60% | Good | Light haze, most trees |
-| 61–85% | Warning | Gray sky, sparse trees |
-| >85% | Danger | Dark smog, dead trees |
+| Budget Used | World State | Visual                 |
+| ----------- | ----------- | ---------------------- |
+| 0–30%       | Pristine    | Clear sky, full forest |
+| 31–60%      | Good        | Light haze, most trees |
+| 61–85%      | Warning     | Gray sky, sparse trees |
+| >85%        | Danger      | Dark smog, dead trees  |
 
 ---
 
@@ -321,7 +322,7 @@ graph TD
 
     subgraph Architecture ["🏗️ System Architecture"]
         direction LR
-        
+
         subgraph Client ["📱 Browser (React 19 + TS)"]
             direction TB
             Features["✨ App Features<br/>(Mirror, Scanner, Budget, Story)"]
@@ -334,14 +335,14 @@ graph TD
             Express["🚀 Express 5 API Proxy"]
             Handlers["🛠️ Domain Handlers"]
             Middleware["🛡️ Middleware<br/>(Rate Limit, Zod Validation)"]
-            
+
             Express --> Middleware --> Handlers
         end
 
         subgraph AI ["🧠 External APIs"]
             Gemini["Google Gemini 2.0 Flash<br/>& Gemini Vision"]
         end
-        
+
         subgraph Fallback ["⚡ Fallback System"]
             RuleBased["Rule-Based Constants<br/>(App never fails silently)"]
         end
@@ -357,7 +358,7 @@ graph TD
     classDef ai fill:#f3e8ff,stroke:#9333ea,stroke-width:2px,color:#581c87;
     classDef fallback fill:#ffedd5,stroke:#ea580c,stroke-width:2px,stroke-dasharray: 5 5,color:#7c2d12;
     classDef pipeline fill:#f1f5f9,stroke:#64748b,stroke-width:2px,color:#0f172a;
-    
+
     class Client,Features,State,Auth client;
     class Server,Express,Handlers,Middleware server;
     class AI,Gemini ai;

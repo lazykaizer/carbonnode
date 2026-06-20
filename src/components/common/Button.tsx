@@ -1,3 +1,4 @@
+/** Module containing UI components for Button. */
 import { forwardRef } from 'react';
 import { usePrefersReducedMotion } from '@/hooks/useMediaQuery';
 

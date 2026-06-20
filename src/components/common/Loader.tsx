@@ -1,3 +1,4 @@
+/** Module containing UI components for Loader. */
 interface LoaderProps {
   size?: 'sm' | 'md' | 'lg';
   message?: string;

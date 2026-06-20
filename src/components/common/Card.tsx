@@ -1,3 +1,4 @@
+/** Module containing UI components for Card. */
 import type { ReactNode } from 'react';
 import { usePrefersReducedMotion } from '@/hooks/useMediaQuery';
 

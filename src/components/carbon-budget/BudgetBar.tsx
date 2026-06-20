@@ -1,3 +1,4 @@
+/** Module containing UI components for BudgetBar. */
 import { memo } from 'react';
 import { usePrefersReducedMotion } from '@/hooks/useMediaQuery';
 import { formatCo2Kg, getBudgetColor } from '@/utils/formatters';

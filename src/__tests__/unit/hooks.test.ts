@@ -133,11 +133,11 @@ describe('Custom Hooks', () => {
       const { result } = renderHook(() => useCountAnimation(100, true, 1000));
       // Initially it should be 0
       expect(result.current).toBe(0);
-      
+
       act(() => {
         vi.advanceTimersByTime(1000);
       });
-      
+
       expect(result.current).toBe(100);
     });
 
@@ -149,11 +149,11 @@ describe('Custom Hooks', () => {
     it('returns 0 if not active', () => {
       const { result } = renderHook(() => useCountAnimation(100, false, 1000));
       expect(result.current).toBe(0);
-      
+
       act(() => {
         vi.advanceTimersByTime(1000);
       });
-      
+
       expect(result.current).toBe(0);
     });
   });

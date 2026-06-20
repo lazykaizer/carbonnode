@@ -1,3 +1,4 @@
+/** Module containing logic for useTypewriter. */
 import { useState, useEffect } from 'react';
 
 export function useTypewriter(

@@ -1,3 +1,4 @@
+/** Module containing logic for index. */
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
