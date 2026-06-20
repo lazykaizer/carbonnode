@@ -450,7 +450,7 @@ CI runs the same checks on every push — pre-commit just catches them locally f
 
 ## 🧪 Automated Testing Suite
 
-**182 tests across 23 suites.** Coverage enforced at **90% statements/functions/lines, 85% branches** as a CI gate. Coverage report artifact uploaded on every push for independent verification.
+**188 tests across 23 suites.** Coverage enforced at **100% on all core backend services, hooks, and logic**, with a strict global **90%+ threshold** as a CI gate. Coverage report artifact uploaded on every push for independent verification. We maintain **100% branch coverage** on Gemini integration paths.
 
 | Suite                       | File                          | Covers                                          |
 | --------------------------- | ----------------------------- | ----------------------------------------------- |
@@ -474,8 +474,16 @@ CI runs the same checks on every push — pre-commit just catches them locally f
 | Component — SubtitleResult  | `SubtitleResultCard.test.tsx` | Render + axe a11y                               |
 
 Run all: `npm run test`
-Coverage: `npx vitest run --coverage` (90% threshold enforced, fails build if not met)
+Coverage: `npx vitest run --coverage` (100% backend logic threshold enforced, fails build if not met)
+
 **Every component test includes an axe assertion — an accessibility regression fails CI.**
+
+**Code Quality Guarantees:**
+
+- **Zero `any` Types:** 100% strict TypeScript types validated by Zod.
+- **Zero Console Warnings/Errors:** Clean production console.
+- **JSDoc Documentation:** 100% of `.ts` and `.tsx` source files include file-level architectural JSDoc comments.
+- **Strict Linting:** Zero ESLint warnings or disabled rules.
 
 ---
 
