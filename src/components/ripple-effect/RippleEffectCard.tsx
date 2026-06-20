@@ -17,23 +17,21 @@ export default function RippleEffectCard() {
 
   const todayCo2 = useMemo(
     () => todayEntries.reduce((sum, entry) => sum + entry.co2Kg, 0),
-    [todayEntries]
+    [todayEntries],
   );
 
-  const dailySavings = useMemo(
-    () => calculateDailySavings(todayCo2),
-    [todayCo2]
-  );
+  const dailySavings = useMemo(() => calculateDailySavings(todayCo2), [todayCo2]);
 
   const rippleImpact = useMemo(
     () => calculateRippleImpact(dailySavings, DEFAULT_COMMUNITY_SIZE),
-    [dailySavings]
+    [dailySavings],
   );
 
   const handleShare = useCallback(async () => {
-    const shareText = dailySavings > 0
-      ? `🌱 I saved ${formatCo2Kg(dailySavings)} of CO₂ today! If ${formatNumber(DEFAULT_COMMUNITY_SIZE)} people did the same, that's ${formatCo2Kg(rippleImpact)} saved! Track yours at Carbon Node.`
-      : `🌍 I'm tracking my carbon footprint with Carbon Node. Today: ${formatCo2Kg(todayCo2)}. Join the movement!`;
+    const shareText =
+      dailySavings > 0
+        ? `🌱 I saved ${formatCo2Kg(dailySavings)} of CO₂ today! If ${formatNumber(DEFAULT_COMMUNITY_SIZE)} people did the same, that's ${formatCo2Kg(rippleImpact)} saved! Track yours at Carbon Node.`
+        : `🌍 I'm tracking my carbon footprint with Carbon Node. Today: ${formatCo2Kg(todayCo2)}. Join the movement!`;
 
     try {
       if (navigator.share) {
@@ -53,11 +51,7 @@ export default function RippleEffectCard() {
   const hasSavings = dailySavings > 0;
 
   return (
-    <FeatureCardShell
-      title="Ripple Effect"
-      icon="🌊"
-      accentColor="#8e44ad"
-    >
+    <FeatureCardShell title="Ripple Effect" icon="🌊" accentColor="#8e44ad">
       <div className="space-y-4">
         {/* Today's footprint */}
         <div className="text-center">
@@ -76,7 +70,7 @@ export default function RippleEffectCard() {
             className={[
               'p-4 rounded-xl text-center',
               hasSavings ? 'bg-green-50' : 'bg-orange-50',
-              prefersReducedMotion ? '' : 'animate-scale-in'
+              prefersReducedMotion ? '' : 'animate-scale-in',
             ].join(' ')}
           >
             {hasSavings ? (
@@ -113,12 +107,7 @@ export default function RippleEffectCard() {
         )}
 
         {/* Share button */}
-        <Button
-          onClick={handleShare}
-          size="sm"
-          variant="outline"
-          fullWidth
-        >
+        <Button onClick={handleShare} size="sm" variant="outline" fullWidth>
           📤 Share Your Ripple
         </Button>
       </div>

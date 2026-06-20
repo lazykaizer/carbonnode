@@ -1,3 +1,4 @@
+/** Express route handler for Carbon Story — weekly AI narrative generation via Gemini with rule-based fallback. */
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 import { getGeminiModel, parseJsonResponse } from '../../shared/geminiClient';
@@ -25,26 +26,25 @@ function getMockResponse(weekData: WeekData) {
   const isGood = weekData.vsIndianAverage !== 'above';
   return {
     story: `This week, you embarked on a low-carbon crusade! By logging ${weekData.actionsLogged} actions and maintaining a 🔥 ${weekData.streakDays}-day streak, your forest is thriving. Your transit decisions have shown a strong commitment to public alternatives.`,
-    highlightStat: isGood ? `Under budget by ${Math.round(100 - weekData.percentageVsAverage)}%` : `${weekData.totalCo2Kg} kg CO₂ logged`,
+    highlightStat: isGood
+      ? `Under budget by ${Math.round(100 - weekData.percentageVsAverage)}%`
+      : `${weekData.totalCo2Kg} kg CO₂ logged`,
     weekRating: isGood ? (weekData.percentageVsAverage < 50 ? 'excellent' : 'good') : 'average',
-    nextWeekTip: `Your highest emissions came from ${weekData.worstCategory || 'energy'}. Try shutting down appliances at night to lower it further next week!`
+    nextWeekTip: `Your highest emissions came from ${weekData.worstCategory || 'energy'}. Try shutting down appliances at night to lower it further next week!`,
   };
 }
 
-router.post(
-  '/',
-  validateSchema(CarbonStoryRequestSchema),
-  async (req: Request, res: Response) => {
-    const weekData = req.body as WeekData;
+router.post('/', validateSchema(CarbonStoryRequestSchema), async (req: Request, res: Response) => {
+  const weekData = req.body as WeekData;
 
-    const model = getGeminiModel();
-    if (!model) {
-      res.json({ ...getMockResponse(weekData), source: 'fallback' });
-      return;
-    }
+  const model = getGeminiModel();
+  if (!model) {
+    res.json({ ...getMockResponse(weekData), source: 'fallback' });
+    return;
+  }
 
-    try {
-      const prompt = `${STORY_PROMPT}
+  try {
+    const prompt = `${STORY_PROMPT}
       
 Weekly Statistics:
 - Total CO₂: ${weekData.totalCo2Kg} kg
@@ -57,13 +57,12 @@ Weekly Statistics:
 - Top Activity: ${weekData.topActivity}
 - Week Number: ${weekData.weekNumber}`;
 
-      const result = await model.generateContent(prompt);
-      const parsed = parseJsonResponse<unknown>(result.response.text());
-      res.json(parsed);
-    } catch {
-      res.json({ ...getMockResponse(weekData), source: 'fallback' });
-    }
+    const result = await model.generateContent(prompt);
+    const parsed = parseJsonResponse<unknown>(result.response.text());
+    res.json(parsed);
+  } catch {
+    res.json({ ...getMockResponse(weekData), source: 'fallback' });
   }
-);
+});
 
 export default router;

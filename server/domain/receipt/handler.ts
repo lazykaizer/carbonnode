@@ -1,3 +1,4 @@
+/** Express route handler for Receipt Scanner — multimodal image carbon analysis via Gemini Vision with rule-based fallback. */
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 import { getGeminiModel, parseJsonResponse } from '../../shared/geminiClient';
@@ -31,10 +32,10 @@ function getMockResponse() {
       { name: 'Chicken Biryani (Double Portion)', quantity: 1, co2Kg: 2.2 },
       { name: 'Paneer Butter Masala', quantity: 1, co2Kg: 1.1 },
       { name: 'Tandoori Roti', quantity: 4, co2Kg: 0.4 },
-      { name: 'Plastic Packaging & Delivery Ride', quantity: 1, co2Kg: 0.3 }
+      { name: 'Plastic Packaging & Delivery Ride', quantity: 1, co2Kg: 0.3 },
     ],
     totalCo2Kg: 4.0,
-    storeName: 'Zomato Food Delivery'
+    storeName: 'Zomato Food Delivery',
   };
 }
 
@@ -65,7 +66,7 @@ router.post(
     } catch {
       res.json({ ...getMockResponse(), source: 'fallback' });
     }
-  }
+  },
 );
 
 export default router;

@@ -12,16 +12,12 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary:
-    'bg-brand-primary text-white hover:bg-brand-secondary active:bg-brand-primary',
-  secondary:
-    'bg-brand-secondary text-white hover:bg-brand-accent active:bg-brand-secondary',
+  primary: 'bg-brand-primary text-white hover:bg-brand-secondary active:bg-brand-primary',
+  secondary: 'bg-brand-secondary text-white hover:bg-brand-accent active:bg-brand-secondary',
   outline:
     'border-2 border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white',
-  ghost:
-    'text-brand-primary hover:bg-brand-bg active:bg-brand-bg',
-  danger:
-    'bg-status-danger text-white hover:bg-red-700 active:bg-status-danger',
+  ghost: 'text-brand-primary hover:bg-brand-bg active:bg-brand-bg',
+  danger: 'bg-status-danger text-white hover:bg-red-700 active:bg-status-danger',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -42,7 +38,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
     const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -61,12 +57,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ].join(' ');
 
     return (
-      <button
-        ref={ref}
-        className={baseClasses}
-        disabled={disabled || isLoading}
-        {...props}
-      >
+      <button ref={ref} className={baseClasses} disabled={disabled || isLoading} {...props}>
         {isLoading ? (
           <>
             <span
@@ -80,7 +71,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         )}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = 'Button';

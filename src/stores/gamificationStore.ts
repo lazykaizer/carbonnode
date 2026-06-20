@@ -1,19 +1,10 @@
+/** Zustand store for XP, streaks, badges, and weekly carbon stories. Persists to localStorage with fully typed Zod schema validation on every load. */
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { z } from 'zod';
 import type { Badge, XpAction, CarbonStoryData } from '@/types';
 import { XP_REWARDS, USER_LEVELS, DEFAULT_BADGES } from '@/utils/constants';
 import { debouncedStorage } from '@/utils/debouncedStorage';
-
-const GamificationStateSchema = z.object({
-  xp: z.number().nonnegative(),
-  streak: z.number().nonnegative(),
-  lastActiveDate: z.string().nullable(),
-  badges: z.array(z.any()), // Assuming we accept any array structure for badges here, or define it
-  shareCount: z.number().nonnegative(),
-  publicTransportDays: z.number().nonnegative(),
-  stories: z.array(z.any()),
-});
+import { GamificationStateSchema } from './gamificationSchemas';
 
 interface GamificationState {
   xp: number;
@@ -29,7 +20,7 @@ interface GamificationState {
   incrementShareCount: () => void;
   incrementTransportDays: () => void;
   addStory: (story: Omit<CarbonStoryData, 'id' | 'createdAt'>) => void;
-  getCurrentLevel: () => typeof USER_LEVELS[number];
+  getCurrentLevel: () => (typeof USER_LEVELS)[number];
   getXpProgress: () => { current: number; min: number; max: number; percentage: number };
   resetGamification: () => void;
 }
@@ -93,7 +84,7 @@ export const useGamificationStore = create<GamificationState>()(
           badges: state.badges.map((badge) =>
             badge.id === badgeId && !badge.unlocked
               ? { ...badge, unlocked: true, unlockedAt: new Date().toISOString() }
-              : badge
+              : badge,
           ),
         }));
       },
@@ -143,18 +134,15 @@ export const useGamificationStore = create<GamificationState>()(
 
       getCurrentLevel: () => {
         const { xp } = get();
-        const level = USER_LEVELS.find(
-          (lvl) => xp >= lvl.minXp && xp <= lvl.maxXp
-        );
+        const level = USER_LEVELS.find((lvl) => xp >= lvl.minXp && xp <= lvl.maxXp);
         return level || USER_LEVELS[0];
       },
 
       getXpProgress: () => {
         const { xp } = get();
         const currentLevel = get().getCurrentLevel();
-        const levelRange = currentLevel.maxXp === Infinity
-          ? 500
-          : currentLevel.maxXp - currentLevel.minXp;
+        const levelRange =
+          currentLevel.maxXp === Infinity ? 500 : currentLevel.maxXp - currentLevel.minXp;
         const progress = xp - currentLevel.minXp;
         const percentage = Math.min((progress / levelRange) * 100, 100);
 
@@ -190,9 +178,11 @@ export const useGamificationStore = create<GamificationState>()(
             ...result.data,
           };
         }
-        console.warn('Failed to parse gamification state', result.error);
+        if (persistedState !== undefined && persistedState !== null) {
+          console.warn('Failed to parse gamification state', result.error);
+        }
         return currentState;
       },
-    }
-  )
+    },
+  ),
 );

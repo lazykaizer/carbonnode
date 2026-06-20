@@ -6,11 +6,11 @@ describe('API Proxy Integration Tests', () => {
     vi.stubGlobal('fetch', vi.fn());
   });
 
-  it('should call /api/carbon-mirror with correct headers and payload', async () => {
+  it('calls /api/carbon-mirror with correct headers and payload', async () => {
     const mockResponse = {
       activities: [{ name: 'Test', co2Kg: 1, category: 'other', suggestion: 'Tip' }],
       totalCo2Kg: 1,
-      overallSuggestion: 'Overall tip'
+      overallSuggestion: 'Overall tip',
     };
 
     vi.mocked(globalThis.fetch).mockResolvedValue({
@@ -20,19 +20,22 @@ describe('API Proxy Integration Tests', () => {
 
     const result = await analyzeDailyActivity('My daily log');
 
-    expect(globalThis.fetch).toHaveBeenCalledWith('/api/carbon-mirror', expect.objectContaining({
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRF-Token': 'CarbonNode',
-      },
-      body: JSON.stringify({ text: 'My daily log' })
-    }));
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      '/api/carbon-mirror',
+      expect.objectContaining({
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRF-Token': 'CarbonNode',
+        },
+        body: JSON.stringify({ text: 'My daily log' }),
+      }),
+    );
     expect(result).toEqual(mockResponse);
   });
 
-  it('should throw an error with message returned by the server on 400 response', async () => {
+  it('throws an error with message returned by the server on 400 response', async () => {
     vi.mocked(globalThis.fetch).mockResolvedValue({
       ok: false,
       status: 400,
@@ -42,7 +45,7 @@ describe('API Proxy Integration Tests', () => {
     await expect(analyzeDailyActivity('')).rejects.toThrow('Field is required');
   });
 
-  it('should parse retry-after and throw custom error on 429 rate limit', async () => {
+  it('parses retry-after and throw custom error on 429 rate limit', async () => {
     vi.mocked(globalThis.fetch).mockResolvedValue({
       ok: false,
       status: 429,

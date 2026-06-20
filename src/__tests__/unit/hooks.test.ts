@@ -1,12 +1,19 @@
 import { renderHook, act } from '@testing-library/react';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { useDailyTimeline } from '../../../src/hooks/useDailyTimeline';
 import { useWeeklyStats } from '../../../src/hooks/useWeeklyStats';
+import { useCountAnimation } from '../../../src/hooks/useCountAnimation';
 import { useCarbonStore } from '../../../src/stores/carbonStore';
+import { vi } from 'vitest';
 
 describe('Custom Hooks', () => {
   beforeEach(() => {
     useCarbonStore.getState().clearAllEntries();
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   describe('useDailyTimeline', () => {
@@ -22,7 +29,7 @@ describe('Custom Hooks', () => {
         category: 'transport',
         activityName: 'Test',
         co2Kg: 5,
-        source: 'manual'
+        source: 'manual',
       });
       const { result } = renderHook(() => useDailyTimeline());
       expect(result.current.dailyData).toHaveLength(30);
@@ -34,7 +41,7 @@ describe('Custom Hooks', () => {
         category: 'transport',
         activityName: 'Today',
         co2Kg: 5,
-        source: 'manual'
+        source: 'manual',
       });
 
       // Add yesterday's entry directly to bypass addEntry's date creation
@@ -49,9 +56,9 @@ describe('Custom Hooks', () => {
             activityName: 'Yesterday',
             co2Kg: 10,
             date: yesterday.toISOString(),
-            source: 'manual'
-          }
-        ]
+            source: 'manual',
+          },
+        ],
       });
 
       const { result } = renderHook(() => useDailyTimeline());
@@ -65,23 +72,26 @@ describe('Custom Hooks', () => {
         category: 'transport',
         activityName: 'Test',
         co2Kg: 3,
-        source: 'manual'
+        source: 'manual',
       });
       const { result } = renderHook(() => useDailyTimeline());
       expect(result.current.dailyData).toHaveLength(30);
       expect(result.current.dailyData[29].totalCo2).toBe(3);
-      expect(result.current.dailyData[29].milestones).toContainEqual({ icon: '🏆', label: 'Budget Hero' });
+      expect(result.current.dailyData[29].milestones).toContainEqual({
+        icon: '🏆',
+        label: 'Budget Hero',
+      });
     });
 
     it('toggles selected day string', () => {
       const { result } = renderHook(() => useDailyTimeline());
       const dayStr = new Date().toDateString();
-      
+
       act(() => {
         result.current.toggleDay(dayStr);
       });
       expect(result.current.selectedNode?.dayStr).toBe(dayStr);
-      
+
       act(() => {
         result.current.toggleDay(dayStr);
       });
@@ -101,13 +111,13 @@ describe('Custom Hooks', () => {
         category: 'food',
         activityName: 'Burger',
         co2Kg: 15,
-        source: 'manual'
+        source: 'manual',
       });
       useCarbonStore.getState().addEntry({
         category: 'transport',
         activityName: 'Flight',
         co2Kg: 50,
-        source: 'manual'
+        source: 'manual',
       });
 
       const { result } = renderHook(() => useWeeklyStats());
@@ -115,6 +125,36 @@ describe('Custom Hooks', () => {
       expect(result.current.weeklyStats.actionsLogged).toBe(2);
       expect(result.current.weeklyStats.topActivity).toBe('Flight');
       expect(result.current.weeklyStats.worstCategory).toBe('transport');
+    });
+  });
+
+  describe('useCountAnimation', () => {
+    it('animates from 0 to target over duration', () => {
+      const { result } = renderHook(() => useCountAnimation(100, true, 1000));
+      // Initially it should be 0
+      expect(result.current).toBe(0);
+      
+      act(() => {
+        vi.advanceTimersByTime(1000);
+      });
+      
+      expect(result.current).toBe(100);
+    });
+
+    it('returns target immediately if duration is 0', () => {
+      const { result } = renderHook(() => useCountAnimation(100, true, 0));
+      expect(result.current).toBe(100);
+    });
+
+    it('returns 0 if not active', () => {
+      const { result } = renderHook(() => useCountAnimation(100, false, 1000));
+      expect(result.current).toBe(0);
+      
+      act(() => {
+        vi.advanceTimersByTime(1000);
+      });
+      
+      expect(result.current).toBe(0);
     });
   });
 });

@@ -8,7 +8,9 @@ test.describe('CarbonNode E2E Journeys', () => {
     });
   });
 
-  test('Journey 1: Log carbon calculator activity and compile weekly AI story', async ({ page }) => {
+  test('Journey 1: Log carbon calculator activity and compile weekly AI story', async ({
+    page,
+  }) => {
     // Proves that adding a transport activity calculates carbon, updates the dashboard budget totals, and allows compilation of the weekly AI story via dev bypass.
     await page.goto('/dashboard');
 
@@ -39,15 +41,19 @@ test.describe('CarbonNode E2E Journeys', () => {
     await compileBtn.click();
 
     // Verify story card updates and displays achievements or rating
-    await expect(page.locator('text=Story Archive').or(page.locator('text=Highlight Achievement'))).toBeVisible();
+    await expect(
+      page.locator('text=Story Archive').or(page.locator('text=Highlight Achievement')),
+    ).toBeVisible();
   });
 
-  test('Journey 2: Upload receipt image, view breakdown list, and verify world visual updates', async ({ page }) => {
+  test('Journey 2: Upload receipt image, view breakdown list, and verify world visual updates', async ({
+    page,
+  }) => {
     // Proves that uploading a receipt PNG image triggers optimization/scanning, displays Swiggy/Zomato item totals, and transitions the world visual state.
     await page.goto('/dashboard');
 
     // Upload a mock PNG image file using setInputFiles
-    const buffer = Buffer.from([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]); // PNG Magic Bytes
+    const buffer = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]); // PNG Magic Bytes
     await page.setInputFiles('input[type="file"]', {
       name: 'receipt.png',
       mimeType: 'image/png',
@@ -72,7 +78,9 @@ test.describe('CarbonNode E2E Journeys', () => {
     await expect(worldLabel).toBeVisible();
   });
 
-  test('Journey 3: Open carbon mirror webcam, stream fake camera feed, and capture snapshot', async ({ page }) => {
+  test('Journey 3: Open carbon mirror webcam, stream fake camera feed, and capture snapshot', async ({
+    page,
+  }) => {
     // Proves that clicking the webcam trigger starts a mocked camera stream, renders a live video player, and closes the stream on capture.
     await page.goto('/dashboard');
 

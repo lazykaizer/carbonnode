@@ -17,40 +17,41 @@ const PORT = process.env.PORT || 8080;
 
 // Helmet Security Headers configuration
 // WHY: Helmet secures the app by setting various HTTP headers (XSS protection, MIME sniffing, HSTS, frame options).
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'"],
-      connectSrc: [
-        "'self'",
-        "https://*.googleapis.com",
-        "https://*.vertexai.com"
-      ],
-      imgSrc: ["'self'", "data:", "blob:"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      fontSrc: ["'self'"],
-      objectSrc: ["'none'"],
-      upgradeInsecureRequests: [],
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        connectSrc: ["'self'", 'https://*.googleapis.com', 'https://*.vertexai.com'],
+        imgSrc: ["'self'", 'data:', 'blob:'],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        fontSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        upgradeInsecureRequests: [],
+      },
     },
-  },
-  // Explicitly deny framing to prevent Clickjacking attacks
-  xFrameOptions: { action: 'deny' },
-  xContentTypeOptions: true,
-  // Enforce zero referrer leak to third-party endpoints
-  referrerPolicy: { 
-    policy: 'no-referrer' 
-  },
-  hsts: {
-    maxAge: 31536000,
-    includeSubDomains: true,
-  },
-}));
+    // Explicitly deny framing to prevent Clickjacking attacks
+    xFrameOptions: { action: 'deny' },
+    xContentTypeOptions: true,
+    // Enforce zero referrer leak to third-party endpoints
+    referrerPolicy: {
+      policy: 'no-referrer',
+    },
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+    },
+  }),
+);
 
 // Set Permissions-Policy header manually
 // WHY: Restricts browser feature API access (camera, geolocation, etc.) to minimize potential abuse surface.
 app.use((_req, res, next) => {
-  res.setHeader('Permissions-Policy', 'camera=(self), microphone=(), geolocation=(), interest-cohort=()');
+  res.setHeader(
+    'Permissions-Policy',
+    'camera=(self), microphone=(), geolocation=(), interest-cohort=()',
+  );
   next();
 });
 
@@ -61,17 +62,17 @@ const ALLOWED_ORIGINS = [
   process.env.ALLOWED_ORIGIN, // set this to your Cloud Run URL in production
 ].filter(Boolean) as string[];
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true); // allow same-origin / curl
-    if (
-      ALLOWED_ORIGINS.includes(origin) ||
-      origin.endsWith('.run.app')
-    ) return callback(null, true);
-    return callback(new Error(`CORS: origin '${origin}' not allowed`), false);
-  },
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // allow same-origin / curl
+      if (ALLOWED_ORIGINS.includes(origin) || origin.endsWith('.run.app'))
+        return callback(null, true);
+      return callback(new Error(`CORS: origin '${origin}' not allowed`), false);
+    },
+    credentials: true,
+  }),
+);
 
 app.use(express.json({ limit: '5mb' }));
 

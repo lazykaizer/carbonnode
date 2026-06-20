@@ -1,3 +1,4 @@
+/** Initializes and exports the Gemini model singleton. Returns null when GEMINI_API_KEY is absent, enabling Demo Mode across all domain handlers. */
 import { GoogleGenerativeAI, type GenerativeModel } from '@google/generative-ai';
 import fs from 'fs';
 
@@ -10,7 +11,7 @@ const PLACEHOLDER_KEY = 'your_gemini_api_key_here';
 
 /**
  * Reads the Gemini API key securely.
- * 
+ *
  * WHY:
  * 1. Storing secrets in plaintext in `.env` files can lead to accidental exposure in source control
  *    or local developer disks.

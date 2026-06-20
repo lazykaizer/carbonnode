@@ -37,13 +37,13 @@ export default function Navbar() {
           href="/"
           className={[
             'flex items-center gap-2.5 group transition-transform duration-300',
-            prefersReducedMotion ? '' : 'hover:scale-[1.02]'
+            prefersReducedMotion ? '' : 'hover:scale-[1.02]',
           ].join(' ')}
         >
           <span
             className={[
               'text-2xl block origin-center',
-              prefersReducedMotion ? '' : 'animate-logo-sway'
+              prefersReducedMotion ? '' : 'animate-logo-sway',
             ].join(' ')}
           >
             🌱
@@ -80,7 +80,9 @@ export default function Navbar() {
             onClick={() => navigate('/dashboard')}
             className={[
               'px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 cursor-pointer transform',
-              prefersReducedMotion ? '' : 'hover:scale-105 active:scale-95 transition-transform duration-250',
+              prefersReducedMotion
+                ? ''
+                : 'hover:scale-105 active:scale-95 transition-transform duration-250',
               scrolled
                 ? 'bg-brand-primary text-white hover:bg-brand-secondary shadow-md shadow-brand-primary/20'
                 : 'bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm border border-white/30',
@@ -101,19 +103,14 @@ export default function Navbar() {
               'block w-6 h-0.5 rounded-full transition-all duration-300',
               scrolled ? 'bg-text-primary' : 'bg-white',
             ];
-            
+
             if (mobileMenuOpen) {
               if (i === 0) lineClasses.push('rotate-45 translate-y-[8px]');
               if (i === 1) lineClasses.push('opacity-0');
               if (i === 2) lineClasses.push('-rotate-45 -translate-y-[8px]');
             }
 
-            return (
-              <span
-                key={i}
-                className={lineClasses.join(' ')}
-              />
-            );
+            return <span key={i} className={lineClasses.join(' ')} />;
           })}
         </button>
       </div>
@@ -122,7 +119,7 @@ export default function Navbar() {
       <div
         className={[
           'md:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100 shadow-xl overflow-hidden transition-all duration-300',
-          mobileMenuOpen ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
+          mobileMenuOpen ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0 pointer-events-none',
         ].join(' ')}
       >
         <div className="px-6 py-4 flex flex-col gap-3">

@@ -18,7 +18,7 @@ describe('Zustand Stores Unit Tests', () => {
   });
 
   describe('CarbonStore', () => {
-    it('should increase totalCo2 correctly when adding entries', () => {
+    it('increases totalCo2 correctly when adding entries', () => {
       const store = useCarbonStore.getState();
       expect(store.getTotalMonthlyUsage()).toBe(0);
 
@@ -42,9 +42,9 @@ describe('Zustand Stores Unit Tests', () => {
       expect(updatedStore.getTotalMonthlyUsage()).toBe(19.7);
     });
 
-    it('should calculate budget percentage correctly including edge cases', () => {
+    it('calculates budget percentage correctly including edge cases', () => {
       const store = useCarbonStore.getState();
-      
+
       // Initially 0%
       expect(store.getBudgetPercentage()).toBe(0);
 
@@ -59,11 +59,11 @@ describe('Zustand Stores Unit Tests', () => {
       expect(useCarbonStore.getState().getBudgetPercentage()).toBe(100);
     });
 
-    it('should handle removing non-existent entry gracefully', () => {
+    it('handles removing non-existent entry gracefully', () => {
       const store = useCarbonStore.getState();
       store.addEntry({ category: 'food', activityName: 'Meal', co2Kg: 10, source: 'manual' });
       const entryId = useCarbonStore.getState().entries[0].id;
-      
+
       store.removeEntry('invalid-id'); // Should not throw and not remove
       expect(useCarbonStore.getState().entries.length).toBe(1);
 
@@ -71,24 +71,26 @@ describe('Zustand Stores Unit Tests', () => {
       expect(useCarbonStore.getState().entries.length).toBe(0);
     });
 
-    it('should handle getTodayEntries, getWeekEntries, getCategoryTotal', () => {
+    it('handles getTodayEntries, getWeekEntries, getCategoryTotal', () => {
       const store = useCarbonStore.getState();
       store.addEntry({ category: 'energy', activityName: 'AC', co2Kg: 10, source: 'manual' });
-      
+
       expect(useCarbonStore.getState().getTodayEntries().length).toBe(1);
       expect(useCarbonStore.getState().getWeekEntries().length).toBe(1);
       expect(useCarbonStore.getState().getCategoryTotal('energy')).toBe(10);
       expect(useCarbonStore.getState().getCategoryTotal('food')).toBe(0);
     });
 
-    it('should update budget limit', () => {
+    it('updates budget limit', () => {
       const store = useCarbonStore.getState();
       store.updateBudgetLimit('food', 999);
-      const foodBudget = useCarbonStore.getState().categoryBudgets.find(b => b.category === 'food');
+      const foodBudget = useCarbonStore
+        .getState()
+        .categoryBudgets.find((b) => b.category === 'food');
       expect(foodBudget?.limitKg).toBe(999);
     });
 
-    it('should handle getBudgetPercentage when totalLimit is 0', () => {
+    it('handles getBudgetPercentage when totalLimit is 0', () => {
       const store = useCarbonStore.getState();
       store.updateBudgetLimit('transport', 0);
       store.updateBudgetLimit('food', 0);
@@ -98,7 +100,7 @@ describe('Zustand Stores Unit Tests', () => {
       expect(store.getBudgetPercentage()).toBe(0);
     });
 
-    it('should merge persisted state correctly', () => {
+    it('merges persisted state correctly', () => {
       const storeOptions = (useCarbonStore as unknown as ZustandPersistStore).persist.getOptions();
       const currentState = useCarbonStore.getState();
       const validEntry = {
@@ -107,17 +109,19 @@ describe('Zustand Stores Unit Tests', () => {
         activityName: 'Test',
         co2Kg: 5,
         date: new Date().toISOString(),
-        source: 'manual' as const
+        source: 'manual' as const,
       };
-      const merged = storeOptions.merge({ entries: [validEntry] }, currentState) as { entries: unknown[] };
+      const merged = storeOptions.merge({ entries: [validEntry] }, currentState) as {
+        entries: unknown[];
+      };
       expect(merged.entries).toEqual([validEntry]);
     });
   });
 
   describe('GamificationStore', () => {
-    it('should increment streak on consecutive days', () => {
+    it('increments streak on consecutive days', () => {
       const store = useGamificationStore.getState();
-      
+
       // Initialize first day streak
       store.updateStreak();
       expect(useGamificationStore.getState().streak).toBe(1);
@@ -131,7 +135,7 @@ describe('Zustand Stores Unit Tests', () => {
       expect(useGamificationStore.getState().streak).toBe(2);
     });
 
-    it('should reset streak to 1 if day is skipped', () => {
+    it('resets streak to 1 if day is skipped', () => {
       // Set initial streak to 5
       useGamificationStore.setState({ streak: 5 });
 
@@ -144,9 +148,9 @@ describe('Zustand Stores Unit Tests', () => {
       expect(useGamificationStore.getState().streak).toBe(1);
     });
 
-    it('should return correct user level based on XP thresholds', () => {
+    it('returns correct user level based on XP thresholds', () => {
       const store = useGamificationStore.getState();
-      
+
       // 0 XP -> Carbon Rookie
       expect(store.getCurrentLevel().name).toBe('Carbon Rookie');
 
@@ -167,9 +171,9 @@ describe('Zustand Stores Unit Tests', () => {
       expect(useGamificationStore.getState().getCurrentLevel().name).toBe('Carbon Legend');
     });
 
-    it('should unlock badge at correct triggers (e.g. sharing ripple card)', () => {
+    it('unlocks badge at correct triggers (e.g. sharing ripple card)', () => {
       const store = useGamificationStore.getState();
-      const rippleBadge = store.badges.find(b => b.id === 'ripple_maker');
+      const rippleBadge = store.badges.find((b) => b.id === 'ripple_maker');
       expect(rippleBadge?.unlocked).toBe(false);
 
       // Increment share count 3 times
@@ -178,13 +182,13 @@ describe('Zustand Stores Unit Tests', () => {
       store.incrementShareCount();
 
       const updatedStore = useGamificationStore.getState();
-      const unlockedBadge = updatedStore.badges.find(b => b.id === 'ripple_maker');
+      const unlockedBadge = updatedStore.badges.find((b) => b.id === 'ripple_maker');
       expect(unlockedBadge?.unlocked).toBe(true);
     });
 
-    it('should handle transport days and story additions', () => {
+    it('handles transport days and story additions', () => {
       const store = useGamificationStore.getState();
-      
+
       store.incrementTransportDays();
       expect(useGamificationStore.getState().publicTransportDays).toBe(1);
       // increment to 5 to trigger metro_week badge
@@ -192,21 +196,29 @@ describe('Zustand Stores Unit Tests', () => {
       store.incrementTransportDays();
       store.incrementTransportDays();
       store.incrementTransportDays();
-      expect(useGamificationStore.getState().badges.find(b => b.id === 'metro_week')?.unlocked).toBe(true);
+      expect(
+        useGamificationStore.getState().badges.find((b) => b.id === 'metro_week')?.unlocked,
+      ).toBe(true);
 
       // add a story
-      store.addStory({ weekNumber: 1, story: 'Test', highlightStat: '10kg', weekRating: 'good', nextWeekTip: 'Tip' });
+      store.addStory({
+        weekNumber: 1,
+        story: 'Test',
+        highlightStat: '10kg',
+        weekRating: 'good',
+        nextWeekTip: 'Tip',
+      });
       expect(useGamificationStore.getState().stories.length).toBe(1);
     });
 
-    it('should return correct progress', () => {
+    it('returns correct progress', () => {
       useGamificationStore.setState({ xp: 50 });
       const progress = useGamificationStore.getState().getXpProgress();
       expect(progress.current).toBe(50);
       expect(progress.percentage).toBe(50);
     });
 
-    it('should award XP on a 7-day streak', () => {
+    it('awards XP on a 7-day streak', () => {
       useGamificationStore.setState({ streak: 6 });
 
       const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
@@ -217,20 +229,30 @@ describe('Zustand Stores Unit Tests', () => {
       expect(useGamificationStore.getState().xp).toBe(50); // XP_REWARDS.streak_7day
     });
 
-    it('should unlock story_collector badge after 4 stories', () => {
+    it('unlocks story_collector badge after 4 stories', () => {
       const store = useGamificationStore.getState();
-      const storyData = { weekNumber: 1, story: 'Test', highlightStat: '10kg', weekRating: 'good' as const, nextWeekTip: 'Tip' };
-      
+      const storyData = {
+        weekNumber: 1,
+        story: 'Test',
+        highlightStat: '10kg',
+        weekRating: 'good' as const,
+        nextWeekTip: 'Tip',
+      };
+
       store.addStory(storyData);
       store.addStory(storyData);
       store.addStory(storyData);
       store.addStory(storyData);
 
-      expect(useGamificationStore.getState().badges.find(b => b.id === 'story_collector')?.unlocked).toBe(true);
+      expect(
+        useGamificationStore.getState().badges.find((b) => b.id === 'story_collector')?.unlocked,
+      ).toBe(true);
     });
 
-    it('should merge persisted state correctly', () => {
-      const storeOptions = (useGamificationStore as unknown as ZustandPersistStore).persist.getOptions();
+    it('merges persisted state correctly', () => {
+      const storeOptions = (
+        useGamificationStore as unknown as ZustandPersistStore
+      ).persist.getOptions();
       const currentState = useGamificationStore.getState();
       const validPersisted = {
         xp: 100,
@@ -241,7 +263,10 @@ describe('Zustand Stores Unit Tests', () => {
         publicTransportDays: 3,
         stories: [],
       };
-      const merged = storeOptions.merge(validPersisted, currentState) as { xp: number; streak: number };
+      const merged = storeOptions.merge(validPersisted, currentState) as {
+        xp: number;
+        streak: number;
+      };
       expect(merged.xp).toBe(100);
       expect(merged.streak).toBe(5);
     });

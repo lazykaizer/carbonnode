@@ -1,3 +1,4 @@
+/** Zustand store for carbon entries and budget limits. Persists to localStorage with Zod rehydration — corrupt or tampered data is silently discarded. */
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { CarbonEntry, CarbonCategory, CategoryBudget } from '@/types';
@@ -39,10 +40,7 @@ function isThisWeek(dateString: string): boolean {
 function isThisMonth(dateString: string): boolean {
   const entryDate = new Date(dateString);
   const now = new Date();
-  return (
-    entryDate.getMonth() === now.getMonth() &&
-    entryDate.getFullYear() === now.getFullYear()
-  );
+  return entryDate.getMonth() === now.getMonth() && entryDate.getFullYear() === now.getFullYear();
 }
 
 export const useCarbonStore = create<CarbonState>()(
@@ -71,9 +69,7 @@ export const useCarbonStore = create<CarbonState>()(
       updateBudgetLimit: (category, limitKg) => {
         set((state) => ({
           categoryBudgets: state.categoryBudgets.map((budget) =>
-            budget.category === category
-              ? { ...budget, limitKg }
-              : budget
+            budget.category === category ? { ...budget, limitKg } : budget,
           ),
         }));
       },
@@ -103,10 +99,7 @@ export const useCarbonStore = create<CarbonState>()(
       },
 
       getBudgetPercentage: () => {
-        const totalLimit = get().categoryBudgets.reduce(
-          (sum, budget) => sum + budget.limitKg,
-          0
-        );
+        const totalLimit = get().categoryBudgets.reduce((sum, budget) => sum + budget.limitKg, 0);
         if (totalLimit === 0) return 0;
         const totalUsed = get().getTotalMonthlyUsage();
         return (totalUsed / totalLimit) * 100;
@@ -128,6 +121,6 @@ export const useCarbonStore = create<CarbonState>()(
           entries: safeParseEntries(state?.entries),
         };
       },
-    }
-  )
+    },
+  ),
 );

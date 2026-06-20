@@ -5,7 +5,7 @@ const storageTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
 
 /**
  * Custom debounced localStorage engine for Zustand.
- * 
+ *
  * WHY:
  * 1. The default Zustand persist middleware writes to localStorage synchronously on every state change.
  * 2. Rapid actions (like budget limit slider updates or successive emissions additions) trigger

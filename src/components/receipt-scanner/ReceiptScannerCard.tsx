@@ -3,15 +3,29 @@ import { FeatureCardShell } from '@/components/dashboard/FeatureGrid';
 import Button from '@/components/common/Button';
 import Loader from '@/components/common/Loader';
 import EmptyState from '@/components/common/EmptyState';
+import { UploadDropzone } from './UploadDropzone';
 import { useReceiptScanner } from '@/hooks/useReceiptScanner';
 import { formatCo2Kg } from '@/utils/formatters';
 import { getCitedSource } from '@/utils/emissionFactors';
 
 export default function ReceiptScannerCard() {
   const {
-    selectedFile, previewUrl, items, totalCo2, storeName,
-    validationError, compressionProgress, originalSize, compressedSize,
-    isLoading, error, handleDrop, handleInputChange, handleScan, clearFile, formatFileSize,
+    selectedFile,
+    previewUrl,
+    items,
+    totalCo2,
+    storeName,
+    validationError,
+    compressionProgress,
+    originalSize,
+    compressedSize,
+    isLoading,
+    error,
+    handleDrop,
+    handleInputChange,
+    handleScan,
+    clearFile,
+    formatFileSize,
   } = useReceiptScanner();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -20,29 +34,20 @@ export default function ReceiptScannerCard() {
       title="Receipt Scanner"
       icon="📱"
       accentColor="#2980b9"
-      headerAction={selectedFile ? (
-        <button onClick={clearFile} className="text-xs text-text-muted hover:text-text-primary transition-colors cursor-pointer touch-target" aria-label="Clear selected file">
-          Clear
-        </button>
-      ) : null}
+      headerAction={
+        selectedFile ? (
+          <button
+            onClick={clearFile}
+            className="text-xs text-text-muted hover:text-text-primary transition-colors cursor-pointer touch-target"
+            aria-label="Clear selected file"
+          >
+            Clear
+          </button>
+        ) : null
+      }
     >
       <div className="space-y-4">
-        {!selectedFile && (
-          <div
-            className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-brand-secondary hover:bg-brand-bg/30 transition-colors cursor-pointer"
-            onDrop={handleDrop}
-            onDragOver={(event) => event.preventDefault()}
-            onClick={() => fileInputRef.current?.click()}
-            onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); fileInputRef.current?.click(); } }}
-            role="button"
-            tabIndex={0}
-            aria-label="Upload a receipt image. Click or drag and drop."
-          >
-            <span className="text-3xl block mb-2" aria-hidden="true">📤</span>
-            <p className="text-sm text-text-secondary mb-1">Drop your receipt here or click to upload</p>
-            <p className="text-xs text-text-muted">JPG, PNG, or WebP — max 5MB</p>
-          </div>
-        )}
+        {!selectedFile && <UploadDropzone handleDrop={handleDrop} fileInputRef={fileInputRef} />}
 
         <input
           ref={fileInputRef}
@@ -53,11 +58,21 @@ export default function ReceiptScannerCard() {
           aria-label="Select receipt file"
         />
 
-        {validationError && <p className="text-xs text-status-danger" role="alert">{validationError}</p>}
+        {validationError && (
+          <p className="text-xs text-status-danger" role="alert">
+            {validationError}
+          </p>
+        )}
 
         {selectedFile && (
           <div className="space-y-3">
-            {previewUrl && <img src={previewUrl} alt="Receipt preview" className="w-full h-32 object-cover rounded-xl" />}
+            {previewUrl && (
+              <img
+                src={previewUrl}
+                alt="Receipt preview"
+                className="w-full h-32 object-cover rounded-xl"
+              />
+            )}
             <div className="flex items-center justify-between text-sm text-text-secondary">
               <span className="truncate max-w-[60%]">{selectedFile.name}</span>
               <span>{formatFileSize(selectedFile.size)}</span>
@@ -67,13 +82,23 @@ export default function ReceiptScannerCard() {
               <div className="text-xs text-text-muted bg-gray-50 border border-gray-200/50 p-2.5 rounded-xl flex flex-col gap-1 text-left">
                 <div className="flex justify-between items-center">
                   <span className="font-medium text-text-secondary">Image Optimization:</span>
-                  <span className="text-emerald-600 font-bold">-{Math.round((1 - compressedSize / originalSize) * 100)}% Size Reduced</span>
+                  <span className="text-emerald-600 font-bold">
+                    -{Math.round((1 - compressedSize / originalSize) * 100)}% Size Reduced
+                  </span>
                 </div>
-                <div className="text-[11px] text-text-muted">Original: {formatFileSize(originalSize)} → Optimized: {formatFileSize(compressedSize)}</div>
+                <div className="text-[11px] text-text-muted">
+                  Original: {formatFileSize(originalSize)} → Optimized:{' '}
+                  {formatFileSize(compressedSize)}
+                </div>
               </div>
             )}
 
-            <Button onClick={handleScan} size="sm" fullWidth isLoading={isLoading || compressionProgress !== null}>
+            <Button
+              onClick={handleScan}
+              size="sm"
+              fullWidth
+              isLoading={isLoading || compressionProgress !== null}
+            >
               Scan Receipt
             </Button>
           </div>
@@ -86,7 +111,10 @@ export default function ReceiptScannerCard() {
               <span>{compressionProgress}%</span>
             </div>
             <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
-              <div className="bg-green-600 h-full transition-all duration-300 rounded-full" style={{ width: `${compressionProgress}%` }} />
+              <div
+                className="bg-green-600 h-full transition-all duration-300 rounded-full"
+                style={{ width: `${compressionProgress}%` }}
+              />
             </div>
           </div>
         )}
@@ -101,21 +129,41 @@ export default function ReceiptScannerCard() {
 
         {items.length > 0 && !isLoading && (
           <div className="space-y-2">
-            {storeName && <p className="text-xs text-text-muted font-medium uppercase tracking-wider">{storeName}</p>}
+            {storeName && (
+              <p className="text-xs text-text-muted font-medium uppercase tracking-wider">
+                {storeName}
+              </p>
+            )}
             {items.map((item, index) => (
-              <div key={`${item.name}-${index}`} className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
+              <div
+                key={`${item.name}-${index}`}
+                className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg"
+              >
                 <div className="flex flex-col text-left">
-                  <span className="text-sm text-text-primary">{item.name} {item.quantity > 1 ? `×${item.quantity}` : ''}</span>
+                  <span className="text-sm text-text-primary">
+                    {item.name} {item.quantity > 1 ? `×${item.quantity}` : ''}
+                  </span>
                   <span className="text-[10px] text-gray-600 mt-0.5">
-                    Source: {getCitedSource(/delivery|packaging|ride|courier/i.test(item.name) ? 'car' : /beef|mutton|meat/i.test(item.name) ? 'beef' : 'chicken')}
+                    Source:{' '}
+                    {getCitedSource(
+                      /delivery|packaging|ride|courier/i.test(item.name)
+                        ? 'car'
+                        : /beef|mutton|meat/i.test(item.name)
+                          ? 'beef'
+                          : 'chicken',
+                    )}
                   </span>
                 </div>
-                <span className="text-sm font-bold carbon-value text-text-primary">{formatCo2Kg(item.co2Kg)}</span>
+                <span className="text-sm font-bold carbon-value text-text-primary">
+                  {formatCo2Kg(item.co2Kg)}
+                </span>
               </div>
             ))}
             <div className="flex items-center justify-between py-2 px-3 bg-brand-bg rounded-lg font-bold">
               <span className="text-sm text-brand-primary">Total</span>
-              <span className="text-sm carbon-value text-brand-primary">{formatCo2Kg(totalCo2)}</span>
+              <span className="text-sm carbon-value text-brand-primary">
+                {formatCo2Kg(totalCo2)}
+              </span>
             </div>
           </div>
         )}

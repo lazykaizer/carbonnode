@@ -22,7 +22,7 @@ export default function CtaSection() {
             key={i}
             className={[
               'absolute w-2 h-2 rounded-full bg-white/20',
-              prefersReducedMotion ? '' : 'animate-float'
+              prefersReducedMotion ? '' : 'animate-float',
             ].join(' ')}
             style={{
               left: `${15 + i * 15}%`,
@@ -38,13 +38,17 @@ export default function CtaSection() {
         <div
           className={[
             'transition-all duration-700 ease-out transform',
-            prefersReducedMotion ? '' : (isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8')
+            prefersReducedMotion
+              ? ''
+              : isInView
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 translate-y-8',
           ].join(' ')}
         >
           <span
             className={[
               'text-6xl sm:text-7xl block mb-6 origin-center',
-              prefersReducedMotion ? '' : 'animate-logo-sway'
+              prefersReducedMotion ? '' : 'animate-logo-sway',
             ].join(' ')}
           >
             🌍
@@ -59,8 +63,8 @@ export default function CtaSection() {
           </h2>
 
           <p className="text-lg sm:text-xl text-white/75 mb-10 max-w-xl mx-auto leading-relaxed">
-            It takes 30 seconds. No sign-up required.
-            Just tell the AI about your day and see the impact.
+            It takes 30 seconds. No sign-up required. Just tell the AI about your day and see the
+            impact.
           </p>
 
           <div
@@ -71,7 +75,7 @@ export default function CtaSection() {
                 : isInView
                   ? 'opacity-100 translate-y-0'
                   : 'opacity-0 translate-y-4',
-              prefersReducedMotion ? '' : 'delay-[300ms]'
+              prefersReducedMotion ? '' : 'delay-[300ms]',
             ].join(' ')}
           >
             <Button
@@ -82,13 +86,13 @@ export default function CtaSection() {
             >
               <span className="flex items-center gap-2">
                 Get Started — It's Free
-                <span className="inline-block transition-transform duration-300 hover:translate-x-1">→</span>
+                <span className="inline-block transition-transform duration-300 hover:translate-x-1">
+                  →
+                </span>
               </span>
             </Button>
 
-            <p className="text-white/50 text-sm">
-              No credit card • No sign-up • 100% private
-            </p>
+            <p className="text-white/50 text-sm">No credit card • No sign-up • 100% private</p>
           </div>
         </div>
       </div>

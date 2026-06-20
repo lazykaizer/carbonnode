@@ -1,3 +1,4 @@
+import { axe } from 'vitest-axe';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ReceiptScannerCard from '@/components/receipt-scanner/ReceiptScannerCard';
@@ -9,6 +10,30 @@ vi.mock('@/hooks/useReceiptScanner', () => ({
 }));
 
 describe('ReceiptScannerCard Component Tests', () => {
+  it('has no axe accessibility violations', async () => {
+    (useReceiptScanner as import('vitest').Mock).mockReturnValue({
+      selectedFile: null,
+      previewUrl: null,
+      items: [],
+      totalCo2: 0,
+      storeName: '',
+      validationError: null,
+      compressionProgress: null,
+      originalSize: null,
+      compressedSize: null,
+      isLoading: false,
+      error: null,
+      handleDrop: vi.fn(),
+      handleInputChange: vi.fn(),
+      handleScan: vi.fn(),
+      clearFile: vi.fn(),
+      formatFileSize: vi.fn(),
+    });
+    const { container } = render(<ReceiptScannerCard />);
+    const results = await axe(container);
+    expect(results.violations).toEqual([]);
+  });
+
   const mockHandleDrop = vi.fn();
   const mockHandleInputChange = vi.fn();
   const mockHandleScan = vi.fn();
@@ -83,7 +108,7 @@ describe('ReceiptScannerCard Component Tests', () => {
       previewUrl: null,
       items: [
         { name: 'Veg Biryani', quantity: 2, co2Kg: 1.2 },
-        { name: 'Packaging', quantity: 1, co2Kg: 0.3 }
+        { name: 'Packaging', quantity: 1, co2Kg: 0.3 },
       ],
       totalCo2: 1.5,
       storeName: 'Swiggy Delivery',

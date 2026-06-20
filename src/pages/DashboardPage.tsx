@@ -23,16 +23,14 @@ export default function DashboardPage() {
   const isMobile = useIsMobile();
   const totalMonthly = useCarbonStore((state) => state.getTotalMonthlyUsage());
   const budgetPercentage = useCarbonStore((state) => state.getBudgetPercentage());
-  const monthEntries = useCarbonStore(
-    useShallow((state) => state.getMonthEntries())
-  );
+  const monthEntries = useCarbonStore(useShallow((state) => state.getMonthEntries()));
 
   const { xp, badges, getCurrentLevel } = useGamificationStore(
     useShallow((state) => ({
       xp: state.xp,
       badges: state.badges,
       getCurrentLevel: state.getCurrentLevel,
-    }))
+    })),
   );
 
   const [announcement, setAnnouncement] = useState('');
@@ -51,14 +49,14 @@ export default function DashboardPage() {
   // Announce badge unlocks
   useEffect(() => {
     const unlockedBadges = badges.filter((b) => b.unlocked).map((b) => b.name);
-    const newUnlocks = unlockedBadges.filter((name) => !prevUnlockedBadgesRef.current.includes(name));
+    const newUnlocks = unlockedBadges.filter(
+      (name) => !prevUnlockedBadgesRef.current.includes(name),
+    );
     if (newUnlocks.length > 0) {
       setAnnouncement(`Congratulations! Unlocked badge: ${newUnlocks.join(', ')}`);
     }
     prevUnlockedBadgesRef.current = unlockedBadges;
   }, [badges]);
-
-
 
   const topCategory = useMemo(() => {
     const totals = calculateCategoryTotals(monthEntries);
@@ -78,7 +76,7 @@ export default function DashboardPage() {
   const suggestion = useMemo(
     // eslint-disable-next-line react-hooks/purity
     () => getActionableSuggestion(topCategory, budgetPercentage, Date.now() % 100),
-    [topCategory, budgetPercentage]
+    [topCategory, budgetPercentage],
   );
 
   return (
@@ -92,16 +90,13 @@ export default function DashboardPage() {
 
       <main
         id="main-content"
-        className={[
-          'transition-all duration-300',
-          isMobile ? 'pb-20 px-4 pt-4' : 'ml-64 p-6',
-        ].join(' ')}
+        className={['transition-all duration-300', isMobile ? 'pb-20 px-4 pt-4' : 'ml-64 p-6'].join(
+          ' ',
+        )}
       >
         {/* Top Header */}
         <header className="mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-text-primary mb-1">
-            Dashboard
-          </h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-text-primary mb-1">Dashboard</h1>
           <div className="flex flex-wrap items-center gap-3 text-sm text-text-secondary">
             <span>
               This month:{' '}
@@ -110,19 +105,19 @@ export default function DashboardPage() {
               </span>
             </span>
             <span className="text-text-muted">•</span>
-            <span>
-              India avg: ~{AVERAGE_INDIAN_MONTHLY_CO2_KG} kg/mo
-            </span>
+            <span>India avg: ~{AVERAGE_INDIAN_MONTHLY_CO2_KG} kg/mo</span>
           </div>
         </header>
 
         {/* World Visual */}
         <section className="mb-6" aria-label="Your carbon world">
-          <Suspense fallback={
-            <div className="w-full h-[320px] bg-white rounded-2xl animate-pulse flex items-center justify-center text-text-muted">
-              Loading interactive world...
-            </div>
-          }>
+          <Suspense
+            fallback={
+              <div className="w-full h-[320px] bg-white rounded-2xl animate-pulse flex items-center justify-center text-text-muted">
+                Loading interactive world...
+              </div>
+            }
+          >
             <WorldVisual />
           </Suspense>
         </section>
@@ -143,19 +138,26 @@ export default function DashboardPage() {
         </section>
 
         {/* Gamification & Timeline Widgets */}
-        <section className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6" aria-label="Timeline and AI Carbon Story">
-          <Suspense fallback={
-            <div className="w-full h-[360px] bg-white rounded-2xl animate-pulse flex items-center justify-center text-text-muted">
-              Loading carbon timeline...
-            </div>
-          }>
+        <section
+          className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6"
+          aria-label="Timeline and AI Carbon Story"
+        >
+          <Suspense
+            fallback={
+              <div className="w-full h-[360px] bg-white rounded-2xl animate-pulse flex items-center justify-center text-text-muted">
+                Loading carbon timeline...
+              </div>
+            }
+          >
             <CarbonTimeline />
           </Suspense>
-          <Suspense fallback={
-            <div className="w-full h-[360px] bg-white rounded-2xl animate-pulse flex items-center justify-center text-text-muted">
-              Loading AI carbon story...
-            </div>
-          }>
+          <Suspense
+            fallback={
+              <div className="w-full h-[360px] bg-white rounded-2xl animate-pulse flex items-center justify-center text-text-muted">
+                Loading AI carbon story...
+              </div>
+            }
+          >
             <CarbonStory />
           </Suspense>
         </section>

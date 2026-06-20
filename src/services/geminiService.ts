@@ -1,5 +1,15 @@
-import type { GeminiMirrorResponse, GeminiReceiptResponse, GeminiSubtitleResponse, GeminiStoryResponse } from '@/types';
-import { GEMINI_RATE_LIMIT_PER_MINUTE, API_MAX_RETRIES, API_RETRY_BASE_DELAY_MS } from '@/utils/constants';
+/** Typed client for the Gemini API proxy. Handles rate limiting, retries, and request serialization. Never called from server-side code. */
+import type {
+  GeminiMirrorResponse,
+  GeminiReceiptResponse,
+  GeminiSubtitleResponse,
+  GeminiStoryResponse,
+} from '@/types';
+import {
+  GEMINI_RATE_LIMIT_PER_MINUTE,
+  API_MAX_RETRIES,
+  API_RETRY_BASE_DELAY_MS,
+} from '@/utils/constants';
 
 /* ─── Rate Limiter ────────────────────────────────────────── */
 
@@ -36,7 +46,7 @@ class FatalError extends Error {
 
 async function withRetry<T>(
   operation: () => Promise<T>,
-  maxRetries: number = API_MAX_RETRIES
+  maxRetries: number = API_MAX_RETRIES,
 ): Promise<T> {
   let lastError: Error | null = null;
 
@@ -91,7 +101,7 @@ async function jsonRequest<T>(url: string, body: Record<string, unknown>): Promi
       headers: {
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest', // For CSRF defense on backend
-        'X-CSRF-Token': 'CarbonNode',         // Dual validation token
+        'X-CSRF-Token': 'CarbonNode', // Dual validation token
       },
       body: JSON.stringify(body),
     });
@@ -125,9 +135,7 @@ async function jsonRequest<T>(url: string, body: Record<string, unknown>): Promi
 
 /* ─── Carbon Mirror API ───────────────────────────────────── */
 
-export async function analyzeDailyActivity(
-  userInput: string
-): Promise<GeminiMirrorResponse> {
+export async function analyzeDailyActivity(userInput: string): Promise<GeminiMirrorResponse> {
   return jsonRequest<GeminiMirrorResponse>('/api/carbon-mirror', { text: userInput });
 }
 
@@ -136,7 +144,7 @@ export async function analyzeDailyActivity(
 export async function analyzeReceipt(
   imageBase64: string,
   mimeType: string,
-  filename?: string
+  filename?: string,
 ): Promise<GeminiReceiptResponse> {
   return jsonRequest<GeminiReceiptResponse>('/api/receipt-scanner', {
     image: imageBase64,
@@ -147,26 +155,22 @@ export async function analyzeReceipt(
 
 /* ─── Carbon Subtitles API ────────────────────────────────── */
 
-export async function analyzeUrl(
-  url: string
-): Promise<GeminiSubtitleResponse> {
+export async function analyzeUrl(url: string): Promise<GeminiSubtitleResponse> {
   return jsonRequest<GeminiSubtitleResponse>('/api/carbon-subtitles', { videoUrl: url });
 }
 
 /* ─── Carbon Story API ────────────────────────────────────── */
 
-export async function generateCarbonStory(
-  weekData: {
-    totalCo2Kg: number;
-    vsIndianAverage: 'below' | 'above' | 'equal';
-    percentageVsAverage: number;
-    bestCategory: string;
-    worstCategory: string;
-    streakDays: number;
-    actionsLogged: number;
-    topActivity: string;
-    weekNumber: number;
-  }
-): Promise<GeminiStoryResponse> {
+export async function generateCarbonStory(weekData: {
+  totalCo2Kg: number;
+  vsIndianAverage: 'below' | 'above' | 'equal';
+  percentageVsAverage: number;
+  bestCategory: string;
+  worstCategory: string;
+  streakDays: number;
+  actionsLogged: number;
+  topActivity: string;
+  weekNumber: number;
+}): Promise<GeminiStoryResponse> {
   return jsonRequest<GeminiStoryResponse>('/api/carbon-story', weekData);
 }

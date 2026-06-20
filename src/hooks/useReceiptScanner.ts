@@ -1,3 +1,4 @@
+/** Manages receipt image selection, compression, and Gemini Vision analysis flow. Encapsulates all receipt scanning state. */
 import { useState, useCallback, useRef } from 'react';
 import { useCarbonStore } from '@/stores/carbonStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
@@ -58,32 +59,41 @@ export function useReceiptScanner(): ReceiptScannerState & ReceiptScannerActions
   const { awardXp, unlockBadge } = useGamificationStore();
   const { loading, errors, setLoading, setError } = useUiStore();
 
-  const handleFileSelect = useCallback((file: File) => {
-    const validation = validateFile(file);
-    if (!validation.isValid) {
-      setValidationError(validation.error);
-      setSelectedFile(null);
-      setPreviewUrl(null);
-      return;
-    }
+  const handleFileSelect = useCallback(
+    (file: File) => {
+      const validation = validateFile(file);
+      if (!validation.isValid) {
+        setValidationError(validation.error);
+        setSelectedFile(null);
+        setPreviewUrl(null);
+        return;
+      }
 
-    setValidationError(null);
-    setSelectedFile(file);
+      setValidationError(null);
+      setSelectedFile(file);
 
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setPreviewUrl(file.type.startsWith('image/') ? createImagePreviewUrl(file) : null);
-  }, [previewUrl]);
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(file.type.startsWith('image/') ? createImagePreviewUrl(file) : null);
+    },
+    [previewUrl],
+  );
 
-  const handleDrop = useCallback((event: React.DragEvent) => {
-    event.preventDefault();
-    const file = event.dataTransfer.files[0];
-    if (file) handleFileSelect(file);
-  }, [handleFileSelect]);
+  const handleDrop = useCallback(
+    (event: React.DragEvent) => {
+      event.preventDefault();
+      const file = event.dataTransfer.files[0];
+      if (file) handleFileSelect(file);
+    },
+    [handleFileSelect],
+  );
 
-  const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) handleFileSelect(file);
-  }, [handleFileSelect]);
+  const handleInputChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) handleFileSelect(file);
+    },
+    [handleFileSelect],
+  );
 
   const handleScan = useCallback(async () => {
     if (!selectedFile) return;
@@ -133,9 +143,8 @@ export function useReceiptScanner(): ReceiptScannerState & ReceiptScannerActions
       awardXp('receipt_scan');
       unlockBadge('first_scan');
     } catch (error) {
-      const message = error instanceof Error
-        ? error.message
-        : 'Failed to scan receipt. Please try again.';
+      const message =
+        error instanceof Error ? error.message : 'Failed to scan receipt. Please try again.';
       setError('receiptScanner', message);
     } finally {
       setLoading('receiptScanner', false);

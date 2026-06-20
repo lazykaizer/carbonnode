@@ -8,19 +8,19 @@ import {
   sanitizeData,
   checkMagicBytes,
   sanitizeFilename,
-  validateReceiptUpload
+  validateReceiptUpload,
 } from '../../../server/shared/middleware/validate';
 import { resolveClientIp } from '../../../server/shared/middleware/rateLimit';
 
 describe('Backend Security Audits', () => {
   describe('1. Input Sanitization & Escaping', () => {
-    it('should strip HTML tags and escape dangerous characters', () => {
+    it('strips HTML tags and escape dangerous characters', () => {
       const payload = '<script>alert("hacked")</script> <b>hello</b> & "world"';
       const sanitized = sanitizeString(payload);
       expect(sanitized).toBe('alert(&quot;hacked&quot;) hello &amp; &quot;world&quot;');
     });
 
-    it('should recursively sanitize objects and arrays while skipping base64 images', () => {
+    it('recursivelies sanitize objects and arrays while skipping base64 images', () => {
       const data = {
         name: '<b>John</b>',
         hobbies: ['<script>evil()</script>', 'reading'],
@@ -36,7 +36,7 @@ describe('Backend Security Audits', () => {
   });
 
   describe('2. Custom Stateless CSRF Protection', () => {
-    it('should reject POST requests lacking custom security headers', async () => {
+    it('rejects POST requests lacking custom security headers', async () => {
       const app = express();
       app.use(express.json());
       // Set NODE_ENV to something other than 'test' to force CSRF execution
@@ -54,7 +54,7 @@ describe('Backend Security Audits', () => {
       process.env.NODE_ENV = originalEnv;
     });
 
-    it('should allow POST requests presenting X-Requested-With header', async () => {
+    it('allows POST requests presenting X-Requested-With header', async () => {
       const app = express();
       app.use(express.json());
       const originalEnv = process.env.NODE_ENV;
@@ -75,7 +75,7 @@ describe('Backend Security Audits', () => {
       process.env.NODE_ENV = originalEnv;
     });
 
-    it('should reject requests from unauthorized origins', async () => {
+    it('rejects requests from unauthorized origins', async () => {
       const app = express();
       app.use(express.json());
       const originalEnv = process.env.NODE_ENV;
@@ -99,7 +99,7 @@ describe('Backend Security Audits', () => {
   });
 
   describe('3. Rate Limiter IP Key Generator', () => {
-    it('should parse client IP from X-Forwarded-For header correctly', () => {
+    it('parses client IP from X-Forwarded-For header correctly', () => {
       const mockReq = {
         headers: {
           'x-forwarded-for': '203.0.113.195, 70.41.3.18, 150.172.238.178',
@@ -109,7 +109,7 @@ describe('Backend Security Audits', () => {
       expect(key).toBe('203.0.113.195');
     });
 
-    it('should fallback to req.ip when X-Forwarded-For is missing', () => {
+    it('fallbacks to req.ip when X-Forwarded-For is missing', () => {
       const mockReq = {
         headers: {},
         ip: '192.168.1.1',
@@ -120,20 +120,29 @@ describe('Backend Security Audits', () => {
   });
 
   describe('4. File Magic Bytes & Filename Sanitization', () => {
-    it('should correctly detect JPEG, PNG, and WebP magic bytes', () => {
+    it('correctlies detect JPEG, PNG, and WebP magic bytes', () => {
       // PNG magic bytes
-      const pngBuffer = Buffer.from([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]);
+      const pngBuffer = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
       expect(checkMagicBytes(pngBuffer).mimeType).toBe('image/png');
 
       // JPEG magic bytes
-      const jpegBuffer = Buffer.from([0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46]);
+      const jpegBuffer = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46]);
       expect(checkMagicBytes(jpegBuffer).mimeType).toBe('image/jpeg');
 
       // WebP magic bytes
       const webpBuffer = Buffer.from([
-        0x52, 0x49, 0x46, 0x46, // RIFF
-        0x00, 0x00, 0x00, 0x00, 
-        0x57, 0x45, 0x42, 0x50  // WEBP
+        0x52,
+        0x49,
+        0x46,
+        0x46, // RIFF
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x57,
+        0x45,
+        0x42,
+        0x50, // WEBP
       ]);
       expect(checkMagicBytes(webpBuffer).mimeType).toBe('image/webp');
 
@@ -142,13 +151,13 @@ describe('Backend Security Audits', () => {
       expect(checkMagicBytes(invalidBuffer).isValid).toBe(false);
     });
 
-    it('should sanitize dangerous filenames to prevent path traversal', () => {
+    it('sanitizes dangerous filenames to prevent path traversal', () => {
       expect(sanitizeFilename('../../etc/passwd')).toBe('passwd');
       expect(sanitizeFilename('my image!.png')).toBe('my_image_.png');
       expect(sanitizeFilename('..')).toBe('sanitized_receipt.png');
     });
 
-    it('should validate receipt payloads correctly', async () => {
+    it('validates receipt payloads correctly', async () => {
       const app = express();
       app.use(express.json());
       app.post('/api/upload', validateReceiptUpload, (req, res) => {
@@ -156,26 +165,24 @@ describe('Backend Security Audits', () => {
       });
 
       // Valid PNG mock base64 (PNG magic bytes base64 is iVBORw0KGgo...)
-      const pngBase64 = Buffer.from([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]).toString('base64');
-      const validRes = await request(app)
-        .post('/api/upload')
-        .send({
-          image: pngBase64,
-          mimeType: 'image/png',
-          filename: 'receipt..png'
-        });
+      const pngBase64 = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]).toString(
+        'base64',
+      );
+      const validRes = await request(app).post('/api/upload').send({
+        image: pngBase64,
+        mimeType: 'image/png',
+        filename: 'receipt..png',
+      });
 
       expect(validRes.status).toBe(200);
       expect(validRes.body.mimeType).toBe('image/png');
       expect(validRes.body.filename).toBe('receipt..png');
 
       // Invalid mimeType mismatch
-      const mismatchRes = await request(app)
-        .post('/api/upload')
-        .send({
-          image: pngBase64,
-          mimeType: 'image/jpeg',
-        });
+      const mismatchRes = await request(app).post('/api/upload').send({
+        image: pngBase64,
+        mimeType: 'image/jpeg',
+      });
       expect(mismatchRes.status).toBe(400);
       expect(mismatchRes.body.error).toContain('MIME type does not match actual image signature');
     });

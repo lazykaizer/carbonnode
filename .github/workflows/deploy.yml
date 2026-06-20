@@ -2,7 +2,7 @@ name: CarbonNode CD
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}

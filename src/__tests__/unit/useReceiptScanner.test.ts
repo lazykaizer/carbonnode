@@ -17,17 +17,17 @@ vi.mock('../../services/geminiService', () => ({
 }));
 
 describe('useReceiptScanner', () => {
-  it('should initialize and reset state', () => {
+  it('initializes and reset state', () => {
     const { result } = renderHook(() => useReceiptScanner());
     expect(result.current.isLoading).toBe(false);
     expect(result.current.previewUrl).toBeNull();
   });
 
-  it('should compress and handle image selection', async () => {
+  it('compresses and handle image selection', async () => {
     const { result } = renderHook(() => useReceiptScanner());
-    
+
     const file = new File(['dummy content'], 'dummy.png', { type: 'image/png' });
-    
+
     await act(async () => {
       await result.current.handleFileSelect(file);
     });
@@ -35,13 +35,13 @@ describe('useReceiptScanner', () => {
     expect(result.current.error).toBeNull();
   });
 
-  it('should handle API failure', async () => {
+  it('handles API failure', async () => {
     (analyzeReceipt as import('vitest').Mock).mockRejectedValueOnce(new Error('Network Error'));
-    
+
     const { result } = renderHook(() => useReceiptScanner());
-    
+
     const file = new File([''], 'dummy.png', { type: 'image/png' });
-    
+
     await act(async () => {
       result.current.handleFileSelect(file);
     });
@@ -55,12 +55,12 @@ describe('useReceiptScanner', () => {
     expect(result.current.isLoading).toBe(false);
   });
 
-  it('should handle successful scan and clearFile', async () => {
+  it('handles successful scan and clearFile', async () => {
     const mockItems = [{ name: 'apples', co2Kg: 0.5 }];
     (analyzeReceipt as import('vitest').Mock).mockResolvedValueOnce({
       items: mockItems,
       totalCo2Kg: 0.5,
-      storeName: 'Grocer'
+      storeName: 'Grocer',
     });
 
     const { result } = renderHook(() => useReceiptScanner());
@@ -87,7 +87,7 @@ describe('useReceiptScanner', () => {
     expect(result.current.totalCo2).toBe(0);
   });
 
-  it('should handle drop and input change events', () => {
+  it('handles drop and input change events', () => {
     const { result } = renderHook(() => useReceiptScanner());
     const file = new File([''], 'dummy.png', { type: 'image/png' });
 
@@ -95,8 +95,8 @@ describe('useReceiptScanner', () => {
     const dragEvent = {
       preventDefault: vi.fn(),
       dataTransfer: {
-        files: [file]
-      }
+        files: [file],
+      },
     } as unknown as React.DragEvent;
 
     act(() => {
@@ -107,8 +107,8 @@ describe('useReceiptScanner', () => {
     // Test handleInputChange
     const changeEvent = {
       target: {
-        files: [file]
-      }
+        files: [file],
+      },
     } as unknown as React.ChangeEvent<HTMLInputElement>;
 
     act(() => {
@@ -117,7 +117,7 @@ describe('useReceiptScanner', () => {
     expect(result.current.selectedFile).toEqual(file);
   });
 
-  it('should handle validation failure', () => {
+  it('handles validation failure', () => {
     const { result } = renderHook(() => useReceiptScanner());
     const file = new File([''], 'dummy.pdf', { type: 'application/pdf' });
     act(() => {

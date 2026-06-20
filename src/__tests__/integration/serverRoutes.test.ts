@@ -16,7 +16,7 @@ vi.mock('../../../server/shared/middleware/rateLimit', () => {
     },
     resetRateLimit: () => {
       requestCount = 0;
-    }
+    },
   };
 });
 
@@ -25,7 +25,9 @@ describe('Server API Routes', () => {
 
   beforeEach(async () => {
     // Reset rate limiter mock state
-    const rateLimitMock = await import('../../../server/shared/middleware/rateLimit') as { resetRateLimit?: () => void };
+    const rateLimitMock = (await import('../../../server/shared/middleware/rateLimit')) as {
+      resetRateLimit?: () => void;
+    };
     if (rateLimitMock.resetRateLimit) {
       rateLimitMock.resetRateLimit();
     }
@@ -48,7 +50,7 @@ describe('Server API Routes', () => {
       const response = await request(app)
         .post('/api/carbon-mirror')
         .send({ text: 'I drove my car today.' });
-      
+
       expect(response.status).toBe(200);
       expect(response.body.source).toBe('fallback');
       expect(response.body.activities).toBeDefined();
@@ -59,17 +61,17 @@ describe('Server API Routes', () => {
     it('returns 400 when required body fields are missing', async () => {
       const response = await request(app).post('/api/receipt-scanner').send({
         // Missing mimeType
-        image: 'base64string'
+        image: 'base64string',
       });
       expect(response.status).toBe(400);
     });
 
     it('returns 200 with source: "fallback" when GEMINI_API_KEY is not set', async () => {
-      process.env.GEMINI_API_KEY = ''; 
+      process.env.GEMINI_API_KEY = '';
       const response = await request(app)
         .post('/api/receipt-scanner')
         .send({ image: 'base64string', mimeType: 'image/jpeg' });
-      
+
       expect(response.status).toBe(200);
       expect(response.body.source).toBe('fallback');
       expect(response.body.items).toBeDefined();
@@ -87,7 +89,7 @@ describe('Server API Routes', () => {
       const response = await request(app)
         .post('/api/carbon-subtitles')
         .send({ videoUrl: 'https://swiggy.com/some-food' });
-      
+
       expect(response.status).toBe(200);
       expect(response.body.source).toBe('fallback');
       expect(response.body.activity).toBeDefined();
@@ -104,7 +106,7 @@ describe('Server API Routes', () => {
       streakDays: 5,
       actionsLogged: 10,
       topActivity: 'Metro',
-      weekNumber: 1
+      weekNumber: 1,
     };
 
     it('returns 400 when required body fields are missing', async () => {
@@ -114,10 +116,8 @@ describe('Server API Routes', () => {
 
     it('returns 200 with source: "fallback" when GEMINI_API_KEY is not set', async () => {
       process.env.GEMINI_API_KEY = '';
-      const response = await request(app)
-        .post('/api/carbon-story')
-        .send(validWeekData);
-      
+      const response = await request(app).post('/api/carbon-story').send(validWeekData);
+
       expect(response.status).toBe(200);
       expect(response.body.source).toBe('fallback');
       expect(response.body.story).toBeDefined();

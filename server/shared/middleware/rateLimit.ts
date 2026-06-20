@@ -9,7 +9,7 @@ interface RateLimitedRequest extends Request {
 
 /**
  * Resolves the client's real IP address, handling proxy chains securely.
- * 
+ *
  * WHY:
  * When deployed behind load balancers/proxies (like Google Cloud Run), the direct socket remote address
  * is the load balancer's IP. To avoid rate-limiting all users globally, we inspect 'X-Forwarded-For'
@@ -27,7 +27,7 @@ export function resolveClientIp(req: Request): string {
 
 /**
  * Configure rate limiter to prevent abuse and brute force.
- * 
+ *
  * WHY:
  * Limits requests to 15 per minute per individual client IP.
  * Uses resolveClientIp to handle cloud proxy configurations.
@@ -37,9 +37,9 @@ export const apiLimiter = rateLimit({
   max: 15, // limit each IP to 15 requests per windowMs
   standardHeaders: true,
   legacyHeaders: false,
-  
+
   keyGenerator: resolveClientIp,
-  
+
   validate: false,
 
   handler: (req, res) => {

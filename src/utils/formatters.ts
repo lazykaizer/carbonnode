@@ -1,4 +1,9 @@
-import { AVERAGE_INDIAN_ANNUAL_CO2_KG, CO2_PER_TREE_KG_PER_YEAR, CO2_PER_CAR_KM } from './constants';
+/** Pure formatting utilities for displaying carbon values, dates, and percentages. No side effects. */
+import {
+  AVERAGE_INDIAN_ANNUAL_CO2_KG,
+  CO2_PER_TREE_KG_PER_YEAR,
+  CO2_PER_CAR_KM,
+} from './constants';
 
 /**
  * Formats a CO₂ value in kilograms to a human-readable string.

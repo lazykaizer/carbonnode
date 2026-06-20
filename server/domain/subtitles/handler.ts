@@ -1,3 +1,4 @@
+/** Express route handler for Carbon Subtitles — URL carbon cost analysis via Gemini with rule-based fallback. */
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 import { getGeminiModel, parseJsonResponse } from '../../shared/geminiClient';
@@ -48,15 +49,22 @@ function getMockResponse(url: string) {
       co2Kg: MOCK_FOOD_DELIVERY_CO2,
       alternative: 'Home-cooked meal with local ingredients',
       alternativeCo2Kg: MOCK_FOOD_DELIVERY_ALT_CO2,
-      explanation: 'Food delivery incurs emissions from restaurant cooking, single-use plastic packaging, and single-occupant motorcycle courier transport.'
+      explanation:
+        'Food delivery incurs emissions from restaurant cooking, single-use plastic packaging, and single-occupant motorcycle courier transport.',
     };
-  } else if (lowerUrl.includes('netflix') || lowerUrl.includes('youtube') || lowerUrl.includes('video') || lowerUrl.includes('prime')) {
+  } else if (
+    lowerUrl.includes('netflix') ||
+    lowerUrl.includes('youtube') ||
+    lowerUrl.includes('video') ||
+    lowerUrl.includes('prime')
+  ) {
     return {
       activity: '4K Ultra-HD Movie Streaming (2h)',
       co2Kg: MOCK_STREAMING_CO2,
       alternative: 'Standard Definition (SD) Streaming',
       alternativeCo2Kg: MOCK_STREAMING_ALT_CO2,
-      explanation: 'Data transmission across cell networks and cloud data center compute are highly energy-intensive. SD reduces network bandwidth by 85%.'
+      explanation:
+        'Data transmission across cell networks and cloud data center compute are highly energy-intensive. SD reduces network bandwidth by 85%.',
     };
   } else if (lowerUrl.includes('ola') || lowerUrl.includes('uber') || lowerUrl.includes('cab')) {
     return {
@@ -64,7 +72,8 @@ function getMockResponse(url: string) {
       co2Kg: MOCK_CAB_RIDE_CO2,
       alternative: 'Namma Metro Commute',
       alternativeCo2Kg: MOCK_CAB_RIDE_ALT_CO2,
-      explanation: 'Single-passenger travel in petrol vehicles emits significant CO₂ per passenger-kilometer. Electric public transit distributes energy cost across hundreds of riders.'
+      explanation:
+        'Single-passenger travel in petrol vehicles emits significant CO₂ per passenger-kilometer. Electric public transit distributes energy cost across hundreds of riders.',
     };
   } else {
     return {
@@ -72,7 +81,8 @@ function getMockResponse(url: string) {
       co2Kg: MOCK_ONLINE_PURCHASE_CO2,
       alternative: 'Local store purchase / eco-branded alternative',
       alternativeCo2Kg: MOCK_ONLINE_PURCHASE_ALT_CO2,
-      explanation: 'Pasting standard product links generally incurs manufacturing emissions and delivery courier logistics. Choosing locally or consolidated delivery options reduces footprint.'
+      explanation:
+        'Pasting standard product links generally incurs manufacturing emissions and delivery courier logistics. Choosing locally or consolidated delivery options reduces footprint.',
     };
   }
 }
@@ -97,8 +107,8 @@ async function fetchMetaTags(url: string): Promise<MetaTags> {
     const response = await fetch(url, {
       signal: controller.signal,
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; CarbonNodeBot/1.0)'
-      }
+        'User-Agent': 'Mozilla/5.0 (compatible; CarbonNodeBot/1.0)',
+      },
     });
 
     clearTimeout(timeoutId);
@@ -135,8 +145,8 @@ async function fetchMetaTags(url: string): Promise<MetaTags> {
  */
 function sanitizeMetaContent(input: string, maxLength: number): string {
   return input
-    .replace(/[\n\r"`\\]/g, ' ')  // Remove newlines, backticks, quotes, backslashes
-    .replace(/\s+/g, ' ')         // Collapse whitespace
+    .replace(/[\n\r"`\\]/g, ' ') // Remove newlines, backticks, quotes, backslashes
+    .replace(/\s+/g, ' ') // Collapse whitespace
     .trim()
     .slice(0, maxLength);
 }
@@ -170,7 +180,7 @@ Fetched OpenGraph Title: ${meta.ogTitle}`;
     } catch {
       res.json({ ...getMockResponse(url), source: 'fallback' });
     }
-  }
+  },
 );
 
 export default router;

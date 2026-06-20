@@ -26,7 +26,9 @@ export default function StoryHistory({
       <div
         className={[
           'overflow-hidden transition-all duration-300',
-          showHistory ? 'max-h-60 opacity-100 mt-3 space-y-3 overflow-y-auto pr-1' : 'max-h-0 opacity-0 pointer-events-none'
+          showHistory
+            ? 'max-h-60 opacity-100 mt-3 space-y-3 overflow-y-auto pr-1'
+            : 'max-h-0 opacity-0 pointer-events-none',
         ].join(' ')}
       >
         {stories.map((story) => (
@@ -36,13 +38,17 @@ export default function StoryHistory({
           >
             <div className="flex justify-between items-center">
               <span className="font-bold text-text-secondary">Week {story.weekNumber} Story</span>
-              <span className={`px-2 py-0.5 rounded-full border text-[10px] ${ratingColors[story.weekRating]?.bg || ''}`}>
+              <span
+                className={`px-2 py-0.5 rounded-full border text-[10px] ${ratingColors[story.weekRating]?.bg || ''}`}
+              >
                 {ratingColors[story.weekRating]?.label || story.weekRating}
               </span>
             </div>
             <p className="italic text-text-primary">"{story.story}"</p>
             <div className="flex justify-between text-[10px] text-gray-400">
-              <span>Achievement: <b>{story.highlightStat}</b></span>
+              <span>
+                Achievement: <b>{story.highlightStat}</b>
+              </span>
               <span>{new Date(story.createdAt).toLocaleDateString()}</span>
             </div>
           </div>

@@ -10,11 +10,7 @@ interface BudgetBarProps {
   limitKg: number;
 }
 
-export const BudgetBar = memo(function BudgetBar({
-  category,
-  usedKg,
-  limitKg,
-}: BudgetBarProps) {
+export const BudgetBar = memo(function BudgetBar({ category, usedKg, limitKg }: BudgetBarProps) {
   const prefersReducedMotion = usePrefersReducedMotion();
   const percentage = limitKg > 0 ? Math.min((usedKg / limitKg) * 100, 100) : 0;
   const barColor = getBudgetColor(percentage);
@@ -27,9 +23,7 @@ export const BudgetBar = memo(function BudgetBar({
           <span className="text-sm" aria-hidden="true">
             {CATEGORY_ICONS[category]}
           </span>
-          <span className="text-sm font-medium text-text-primary">
-            {CATEGORY_LABELS[category]}
-          </span>
+          <span className="text-sm font-medium text-text-primary">{CATEGORY_LABELS[category]}</span>
         </div>
         <span
           className={[
@@ -52,11 +46,11 @@ export const BudgetBar = memo(function BudgetBar({
         <div
           className={[
             'h-full rounded-full',
-            prefersReducedMotion ? '' : 'transition-[width] duration-700 ease-out'
+            prefersReducedMotion ? '' : 'transition-[width] duration-700 ease-out',
           ].join(' ')}
           style={{
             backgroundColor: barColor,
-            width: `${percentage}%`
+            width: `${percentage}%`,
           }}
         />
       </div>

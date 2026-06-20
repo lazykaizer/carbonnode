@@ -15,10 +15,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div className="flex flex-col gap-1.5">
-        <label
-          htmlFor={inputId}
-          className="text-sm font-medium text-text-secondary"
-        >
+        <label htmlFor={inputId} className="text-sm font-medium text-text-secondary">
           {label}
         </label>
 
@@ -48,9 +45,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             ].join(' ')}
             aria-invalid={error ? 'true' : 'false'}
             aria-describedby={
-              [error ? errorId : '', hint ? hintId : '']
-                .filter(Boolean)
-                .join(' ') || undefined
+              [error ? errorId : '', hint ? hintId : ''].filter(Boolean).join(' ') || undefined
             }
             {...props}
           />
@@ -69,7 +64,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = 'Input';

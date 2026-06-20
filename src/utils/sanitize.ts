@@ -1,13 +1,13 @@
+/**
+ * Sanitizes user input to prevent XSS attacks.
+ * Strips all HTML tags and dangerous content.
+ */
 // ⚠️ CLIENT-SIDE ONLY — Do not import this file in server/ routes.
 // DOMPurify requires a DOM environment (browser or JSDOM).
 // For server-side input sanitization, use validateTextLength and validateBody
 // middleware in server/middleware/validate.ts instead.
 import DOMPurify from 'dompurify';
 
-/**
- * Sanitizes user input to prevent XSS attacks.
- * Strips all HTML tags and dangerous content.
- */
 export function sanitizeInput(input: string): string {
   return DOMPurify.sanitize(input, {
     ALLOWED_TAGS: [],

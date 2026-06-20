@@ -1,3 +1,4 @@
+/** Derives weekly carbon statistics and budget comparisons from the carbon store. Pure transformation, no side effects. */
 import { useMemo } from 'react';
 import { useCarbonStore } from '@/stores/carbonStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
@@ -65,14 +66,22 @@ export function useWeeklyStats(): { weeklyStats: WeeklyStats; uniqueLogDays: num
     let bestVal = Infinity;
 
     for (const [cat, val] of Object.entries(categoryTotals)) {
-      if (val > worstVal) { worstVal = val; worstCategory = cat; }
-      if (val < bestVal) { bestVal = val; bestCategory = cat; }
+      if (val > worstVal) {
+        worstVal = val;
+        worstCategory = cat;
+      }
+      if (val < bestVal) {
+        bestVal = val;
+        bestCategory = cat;
+      }
     }
 
     const vsIndianAverage =
-      totalCo2Kg < AVERAGE_WEEKLY_CO2_KG ? 'below'
-      : totalCo2Kg > AVERAGE_WEEKLY_CO2_KG ? 'above'
-      : 'equal';
+      totalCo2Kg < AVERAGE_WEEKLY_CO2_KG
+        ? 'below'
+        : totalCo2Kg > AVERAGE_WEEKLY_CO2_KG
+          ? 'above'
+          : 'equal';
 
     const percentageVsAverage = Math.round((totalCo2Kg / AVERAGE_WEEKLY_CO2_KG) * 100);
 

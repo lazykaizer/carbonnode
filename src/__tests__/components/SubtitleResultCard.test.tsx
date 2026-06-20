@@ -1,9 +1,18 @@
+import { axe } from 'vitest-axe';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import SubtitleResultCard from '@/components/carbon-subtitles/SubtitleResultCard';
 import type { SubtitleResult } from '@/types';
 
 describe('SubtitleResultCard Component Tests', () => {
+  it('has no axe accessibility violations', async () => {
+    const { container } = render(
+      <SubtitleResultCard result={baseResult} prefersReducedMotion={false} />,
+    );
+    const results = await axe(container);
+    expect(results.violations).toEqual([]);
+  });
+
   const baseResult: SubtitleResult = {
     activity: 'Swiggy Food Delivery',
     co2Kg: 2.5,

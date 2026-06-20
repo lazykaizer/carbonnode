@@ -4,7 +4,7 @@ import path from 'path';
 
 /**
  * Strips HTML tags and escapes special HTML characters to prevent XSS / HTML injection.
- * 
+ *
  * WHY:
  * Sanitize user-provided text inputs before they are passed into the Gemini AI client
  * or sent back in the HTTP response. This guards against prompt injection containing HTML
@@ -53,7 +53,7 @@ export function sanitizeData<T>(data: T): T {
 
 /**
  * Reusable Zod schema validation middleware.
- * 
+ *
  * WHY:
  * Enforces structured schema validation at the Express controller boundary.
  * Also automatically sanitizes all input strings to prevent script injections.
@@ -77,7 +77,7 @@ export function validateSchema(schema: z.ZodTypeAny) {
 
 /**
  * Verifies if file buffer starts with known magic bytes for JPG, PNG, or WebP.
- * 
+ *
  * WHY:
  * Content-type headers or file extensions can be spoofed by attackers to upload
  * malicious executable files. Validating magic bytes ensures the file is truly an image.
@@ -86,19 +86,25 @@ export function checkMagicBytes(buffer: Buffer): { isValid: boolean; mimeType: s
   if (buffer.length < 8) return { isValid: false, mimeType: null };
 
   // PNG Magic Bytes: 89 50 4E 47 0D 0A 1A 0A
-  if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47) {
+  if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4e && buffer[3] === 0x47) {
     return { isValid: true, mimeType: 'image/png' };
   }
 
   // JPEG Magic Bytes: FF D8 FF
-  if (buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) {
+  if (buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff) {
     return { isValid: true, mimeType: 'image/jpeg' };
   }
 
   // WebP Magic Bytes: RIFF (first 4 bytes) and WEBP (bytes 8-11)
   if (
-    buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46 && // "RIFF"
-    buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50    // "WEBP"
+    buffer[0] === 0x52 &&
+    buffer[1] === 0x49 &&
+    buffer[2] === 0x46 &&
+    buffer[3] === 0x46 && // "RIFF"
+    buffer[8] === 0x57 &&
+    buffer[9] === 0x45 &&
+    buffer[10] === 0x42 &&
+    buffer[11] === 0x50 // "WEBP"
   ) {
     return { isValid: true, mimeType: 'image/webp' };
   }
@@ -108,7 +114,7 @@ export function checkMagicBytes(buffer: Buffer): { isValid: boolean; mimeType: s
 
 /**
  * Sanitizes input filenames to prevent Path Traversal attacks.
- * 
+ *
  * WHY:
  * Malicious filenames containing '../' could compromise server folders or lead to write vulnerabilities.
  */
@@ -123,7 +129,7 @@ export function sanitizeFilename(filename: string): string {
 
 /**
  * Middleware for strict receipt uploads security.
- * 
+ *
  * WHY:
  * Limits file payload sizes, decodes base64 strings to inspect file signatures (magic bytes),
  * matches actual types against declared types, and sanitizes filenames.
@@ -164,7 +170,8 @@ export function validateReceiptUpload(req: Request, res: Response, next: NextFun
   const magic = checkMagicBytes(buffer);
   if (!magic.isValid) {
     res.status(400).json({
-      error: 'Security alert: Uploaded receipt image failed signature check. Only genuine JPG, PNG, and WebP images are allowed.',
+      error:
+        'Security alert: Uploaded receipt image failed signature check. Only genuine JPG, PNG, and WebP images are allowed.',
     });
     return;
   }
@@ -221,7 +228,9 @@ export function validateTextLength(field: string, maxLength: number = 500) {
     }
 
     if (text.trim().length > maxLength) {
-      res.status(400).json({ error: `Field '${field}' exceeds maximum length of ${maxLength} characters` });
+      res
+        .status(400)
+        .json({ error: `Field '${field}' exceeds maximum length of ${maxLength} characters` });
       return;
     }
 

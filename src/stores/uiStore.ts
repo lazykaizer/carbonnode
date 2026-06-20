@@ -1,3 +1,4 @@
+/** Zustand store for transient UI state (loading flags, error messages). Not persisted — resets on every page load. */
 import { create } from 'zustand';
 import type { LoadingState, ErrorState } from '@/types';
 

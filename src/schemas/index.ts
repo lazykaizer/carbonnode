@@ -1,12 +1,7 @@
+/** Zod schemas as the single source of truth for all data shapes. TypeScript types are derived via z.infer<> — never written separately. */
 import { z } from 'zod';
 
-export const CarbonCategorySchema = z.enum([
-  'transport',
-  'food',
-  'energy',
-  'shopping',
-  'other',
-]);
+export const CarbonCategorySchema = z.enum(['transport', 'food', 'energy', 'shopping', 'other']);
 
 export const CarbonEntrySchema = z.object({
   id: z.string().uuid(),
@@ -98,7 +93,9 @@ export function safeParseEntries(raw: unknown): z.infer<typeof CarbonEntrySchema
   if (result.success) {
     return result.data;
   }
-  console.warn('Failed to parse carbon entries', result.error);
+  if (raw !== undefined && raw !== null) {
+    console.warn('Failed to parse carbon entries', result.error);
+  }
   return [];
 }
 
@@ -107,7 +104,9 @@ export function safeParseBudget(raw: unknown): z.infer<typeof BudgetLimitsSchema
   if (result.success) {
     return result.data;
   }
-  console.warn('Failed to parse budget limits', result.error);
+  if (raw !== undefined && raw !== null) {
+    console.warn('Failed to parse budget limits', result.error);
+  }
   return {
     transport: 0,
     food: 0,

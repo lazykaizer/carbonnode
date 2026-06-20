@@ -27,10 +27,10 @@ if (typeof window !== 'undefined') {
   window.matchMedia = window.matchMedia || mockMatchMedia;
 }
 if (typeof globalThis !== 'undefined') {
-  (globalThis as unknown as Record<string, unknown>).matchMedia = (globalThis as unknown as Record<string, unknown>).matchMedia || mockMatchMedia;
+  (globalThis as unknown as Record<string, unknown>).matchMedia =
+    (globalThis as unknown as Record<string, unknown>).matchMedia || mockMatchMedia;
 }
 if (typeof global !== 'undefined') {
-  (global as unknown as Record<string, unknown>).matchMedia = (global as unknown as Record<string, unknown>).matchMedia || mockMatchMedia;
+  (global as unknown as Record<string, unknown>).matchMedia =
+    (global as unknown as Record<string, unknown>).matchMedia || mockMatchMedia;
 }
-
-

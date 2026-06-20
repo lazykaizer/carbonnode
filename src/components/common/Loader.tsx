@@ -25,11 +25,7 @@ export default function Loader({ size = 'md', message }: LoaderProps) {
         aria-hidden="true"
       />
 
-      {message && (
-        <p className="text-sm text-text-secondary animate-pulse-soft">
-          {message}
-        </p>
-      )}
+      {message && <p className="text-sm text-text-secondary animate-pulse-soft">{message}</p>}
 
       <span className="sr-only">{message || 'Loading content'}</span>
     </div>

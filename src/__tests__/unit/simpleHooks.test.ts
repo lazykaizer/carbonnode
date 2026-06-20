@@ -2,16 +2,22 @@ import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useTypewriter } from '../../hooks/useTypewriter';
-import { useIsMobile, useIsTablet, useIsDesktop, usePrefersReducedMotion, useMediaQuery } from '../../hooks/useMediaQuery';
+import {
+  useIsMobile,
+  useIsTablet,
+  useIsDesktop,
+  usePrefersReducedMotion,
+  useMediaQuery,
+} from '../../hooks/useMediaQuery';
 import { useInView } from '../../hooks/useInView';
 import { useUiStore } from '../../stores/uiStore';
 
 describe('Simple Hooks', () => {
   describe('useDebounce', () => {
-    it('should debounce value', () => {
+    it('debounces value', () => {
       vi.useFakeTimers();
       const { result, rerender } = renderHook(({ val }) => useDebounce(val, 500), {
-        initialProps: { val: 'a' }
+        initialProps: { val: 'a' },
       });
       expect(result.current).toBe('a');
       rerender({ val: 'b' });
@@ -25,24 +31,34 @@ describe('Simple Hooks', () => {
   });
 
   describe('useTypewriter', () => {
-    it('should type and delete', () => {
+    it('types and delete', () => {
       vi.useFakeTimers();
       const { result } = renderHook(() => useTypewriter(['Hi'], 10, 10, 10));
       expect(result.current).toBe('');
-      act(() => { vi.advanceTimersByTime(10); });
-      act(() => { vi.advanceTimersByTime(10); });
+      act(() => {
+        vi.advanceTimersByTime(10);
+      });
+      act(() => {
+        vi.advanceTimersByTime(10);
+      });
       expect(result.current).toBe('Hi');
-      act(() => { vi.advanceTimersByTime(20); }); // trigger pause timeout
-      act(() => { vi.advanceTimersByTime(10); }); // trigger delete first char
-      act(() => { vi.advanceTimersByTime(10); }); // trigger delete second char
+      act(() => {
+        vi.advanceTimersByTime(20);
+      }); // trigger pause timeout
+      act(() => {
+        vi.advanceTimersByTime(10);
+      }); // trigger delete first char
+      act(() => {
+        vi.advanceTimersByTime(10);
+      }); // trigger delete second char
       expect(result.current).toBe('');
       vi.useRealTimers();
     });
   });
 
   describe('useMediaQuery', () => {
-    it('should return matches based on window.matchMedia', () => {
-      const matchMediaMock = vi.fn().mockImplementation(query => ({
+    it('returns matches based on window.matchMedia', () => {
+      const matchMediaMock = vi.fn().mockImplementation((query) => ({
         matches: query === '(min-width: 1024px)',
         media: query,
         onchange: null,
@@ -67,8 +83,8 @@ describe('Simple Hooks', () => {
       expect(r4.current).toBe(false);
     });
 
-    it('should update matches when query prop changes', () => {
-      const matchMediaMock = vi.fn().mockImplementation(query => ({
+    it('updates matches when query prop changes', () => {
+      const matchMediaMock = vi.fn().mockImplementation((query) => ({
         matches: query === '(min-width: 1024px)',
         media: query,
         onchange: null,
@@ -81,7 +97,7 @@ describe('Simple Hooks', () => {
       window.matchMedia = matchMediaMock;
 
       const { result, rerender } = renderHook(({ q }) => useMediaQuery(q), {
-        initialProps: { q: '(min-width: 1024px)' }
+        initialProps: { q: '(min-width: 1024px)' },
       });
       expect(result.current).toBe(true);
 
@@ -89,9 +105,9 @@ describe('Simple Hooks', () => {
       expect(result.current).toBe(false);
     });
 
-    it('should update matches when media query change event is triggered', () => {
+    it('updates matches when media query change event is triggered', () => {
       let changeCallback: ((event: MediaQueryListEvent) => void) | null = null;
-      const matchMediaMock = vi.fn().mockImplementation(query => ({
+      const matchMediaMock = vi.fn().mockImplementation((query) => ({
         matches: false,
         media: query,
         onchange: null,
@@ -116,8 +132,8 @@ describe('Simple Hooks', () => {
       expect(result.current).toBe(true);
     });
 
-    it('should return true for useIsTablet when width is between 768px and 1024px', () => {
-      const matchMediaMock = vi.fn().mockImplementation(query => ({
+    it('returns true for useIsTablet when width is between 768px and 1024px', () => {
+      const matchMediaMock = vi.fn().mockImplementation((query) => ({
         matches: query === '(min-width: 768px)',
         media: query,
         onchange: null,
@@ -135,7 +151,7 @@ describe('Simple Hooks', () => {
   });
 
   describe('useInView', () => {
-    it('should observe element and update state when intersecting', () => {
+    it('observes element and update state when intersecting', () => {
       let observerCallback: ((entries: Partial<IntersectionObserverEntry>[]) => void) | null = null;
       const unobserveMock = vi.fn();
       const observeMock = vi.fn();
@@ -148,13 +164,14 @@ describe('Simple Hooks', () => {
         unobserve = unobserveMock;
         disconnect = vi.fn();
       }
-      globalThis.IntersectionObserver = MockIntersectionObserver as unknown as typeof IntersectionObserver;
+      globalThis.IntersectionObserver =
+        MockIntersectionObserver as unknown as typeof IntersectionObserver;
 
       const element = document.createElement('div');
       const ref = { current: element };
 
       const { result, rerender } = renderHook(({ once }) => useInView(ref, { once }), {
-        initialProps: { once: false }
+        initialProps: { once: false },
       });
 
       expect(result.current).toBe(false);
@@ -181,7 +198,7 @@ describe('Simple Hooks', () => {
       expect(unobserveMock).toHaveBeenCalledWith(element);
     });
 
-    it('should handle null ref gracefully', () => {
+    it('handles null ref gracefully', () => {
       const ref = { current: null };
       const { result } = renderHook(() => useInView(ref));
       expect(result.current).toBe(false);
@@ -190,10 +207,10 @@ describe('Simple Hooks', () => {
 });
 
 describe('uiStore', () => {
-  it('should manage UI state', () => {
+  it('manages UI state', () => {
     const store = useUiStore.getState();
     expect(store.sidebarOpen).toBe(true);
-    
+
     useUiStore.getState().toggleSidebar();
     expect(useUiStore.getState().sidebarOpen).toBe(false);
 

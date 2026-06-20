@@ -2,9 +2,9 @@ name: CarbonNode CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
 
 permissions:
   contents: read
@@ -64,7 +64,7 @@ jobs:
             | **Branches** | ${format('branches')} |
             | **Functions** | ${format('functions')} |
             | **Lines** | ${format('lines')} |
-            
+
             *Threshold required: 85%*`;
 
             const { data: comments } = await github.rest.issues.listComments({
@@ -100,7 +100,6 @@ jobs:
 
       - name: Production Build Check
         run: npm run build
-
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium

@@ -10,7 +10,7 @@ describe('Client-Side Rate Limiter Tests', () => {
     vi.useRealTimers();
   });
 
-  it('should allow requests below the limit and block once the limit is reached', () => {
+  it('allows requests below the limit and block once the limit is reached', () => {
     // Advance time to clear previous test history
     vi.advanceTimersByTime(24 * 60 * 60 * 1000);
 
@@ -30,7 +30,7 @@ describe('Client-Side Rate Limiter Tests', () => {
     expect(checkRateLimit()).toBe(false);
   });
 
-  it('should unlock the rate limit after a 60-second window passes', () => {
+  it('unlocks the rate limit after a 60-second window passes', () => {
     vi.advanceTimersByTime(24 * 60 * 60 * 1000);
 
     for (let i = 0; i < 15; i++) {

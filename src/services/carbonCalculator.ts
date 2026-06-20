@@ -1,3 +1,4 @@
+/** Pure domain functions for carbon footprint calculation. Deterministic and side-effect free — the same input always yields the same output. */
 import type { CarbonEntry, CarbonCategory } from '@/types';
 import { AVERAGE_INDIAN_DAILY_CO2_KG, AVERAGE_INDIAN_MONTHLY_CO2_KG } from '@/utils/constants';
 
@@ -11,9 +12,7 @@ export function calculateTotalCo2(entries: CarbonEntry[]): number {
 /**
  * Groups entries by category and sums their CO₂.
  */
-export function calculateCategoryTotals(
-  entries: CarbonEntry[]
-): Record<CarbonCategory, number> {
+export function calculateCategoryTotals(entries: CarbonEntry[]): Record<CarbonCategory, number> {
   const totals: Record<CarbonCategory, number> = {
     transport: 0,
     food: 0,
@@ -47,10 +46,7 @@ export function calculateMonthlySavings(monthlyCo2Kg: number): number {
 /**
  * Scales individual savings to a community size.
  */
-export function calculateRippleImpact(
-  individualSavingsKg: number,
-  communitySize: number
-): number {
+export function calculateRippleImpact(individualSavingsKg: number, communitySize: number): number {
   return Math.max(0, individualSavingsKg * communitySize);
 }
 
@@ -70,7 +66,7 @@ export function getWorldStateFromBudget(budgetPercentage: number): string {
 export function getActionableSuggestion(
   topCategory: CarbonCategory,
   budgetPercentage: number,
-  seed: number
+  seed: number,
 ): string {
   const suggestions: Record<CarbonCategory, string[]> = {
     transport: [

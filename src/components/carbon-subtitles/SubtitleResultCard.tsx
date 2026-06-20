@@ -14,22 +14,13 @@ export default function SubtitleResultCard({
   const savingsKg = Math.max(0, result.co2Kg - result.alternativeCo2Kg);
 
   return (
-    <div
-      className={[
-        'space-y-4',
-        prefersReducedMotion ? '' : 'animate-slide-up'
-      ].join(' ')}
-    >
+    <div className={['space-y-4', prefersReducedMotion ? '' : 'animate-slide-up'].join(' ')}>
       <Card hoverable={false}>
-        <h2 className="text-lg font-bold text-text-primary mb-4">
-          {result.activity}
-        </h2>
+        <h2 className="text-lg font-bold text-text-primary mb-4">{result.activity}</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <div className="p-4 bg-orange-50 rounded-xl text-center">
-            <p className="text-xs text-text-muted mb-1 uppercase tracking-wider">
-              This Choice
-            </p>
+            <p className="text-xs text-text-muted mb-1 uppercase tracking-wider">This Choice</p>
             <p className="text-3xl font-bold carbon-value text-status-warning">
               {formatCo2Kg(result.co2Kg)}
             </p>
@@ -51,9 +42,7 @@ export default function SubtitleResultCard({
           <p className="text-sm font-semibold text-brand-primary mb-1">
             💡 Try instead: {result.alternative}
           </p>
-          <p className="text-xs text-text-secondary">
-            {result.explanation}
-          </p>
+          <p className="text-xs text-text-secondary">{result.explanation}</p>
           {savingsKg > 0 && (
             <p className="text-xs font-bold text-brand-primary mt-2">
               Potential savings: {formatCo2Kg(savingsKg)} CO₂

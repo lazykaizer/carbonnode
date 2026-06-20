@@ -42,7 +42,9 @@ export default function CarbonSubtitlesPage() {
     try {
       const analysisResult = await analyzeUrl(sanitized);
       setResult(analysisResult);
-      setAnnouncement(`Analysis completed. ${analysisResult.activity} emits ${formatCo2Kg(analysisResult.co2Kg)}.`);
+      setAnnouncement(
+        `Analysis completed. ${analysisResult.activity} emits ${formatCo2Kg(analysisResult.co2Kg)}.`,
+      );
       addEntry({
         category: 'other',
         activityName: analysisResult.activity,
@@ -50,7 +52,8 @@ export default function CarbonSubtitlesPage() {
         source: 'subtitles',
       });
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to analyze URL. Please try again.';
+      const message =
+        error instanceof Error ? error.message : 'Failed to analyze URL. Please try again.';
       setError('carbonSubtitles', message);
       setAnnouncement(`Error analyzing URL: ${message}`);
     } finally {
@@ -65,12 +68,21 @@ export default function CarbonSubtitlesPage() {
   return (
     <div className="min-h-screen bg-brand-bg">
       <Sidebar />
-      <div className="sr-only" aria-live="polite" aria-atomic="true">{announcement}</div>
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {announcement}
+      </div>
 
-      <main id="main-content" className={`transition-all duration-300 ${isMobile ? 'pb-20 px-4 pt-4' : 'ml-64 p-6'}`}>
+      <main
+        id="main-content"
+        className={`transition-all duration-300 ${isMobile ? 'pb-20 px-4 pt-4' : 'ml-64 p-6'}`}
+      >
         <header className="mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-text-primary mb-1">📺 Carbon Subtitles</h1>
-          <p className="text-text-secondary">Paste any URL — get the carbon cost of that choice before you make it.</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-text-primary mb-1">
+            📺 Carbon Subtitles
+          </h1>
+          <p className="text-text-secondary">
+            Paste any URL — get the carbon cost of that choice before you make it.
+          </p>
         </header>
 
         <Card className="mb-6" hoverable={false}>
@@ -90,20 +102,32 @@ export default function CarbonSubtitlesPage() {
               aria-describedby={validationError ? 'url-error' : undefined}
               disabled={loading.carbonSubtitles}
             />
-            <Button onClick={handleAnalyze} isLoading={loading.carbonSubtitles} className="whitespace-nowrap">
+            <Button
+              onClick={handleAnalyze}
+              isLoading={loading.carbonSubtitles}
+              className="whitespace-nowrap"
+            >
               Analyze URL
             </Button>
           </div>
-          {validationError && <p id="url-error" className="text-xs text-status-danger mt-2" role="alert">{validationError}</p>}
+          {validationError && (
+            <p id="url-error" className="text-xs text-status-danger mt-2" role="alert">
+              {validationError}
+            </p>
+          )}
         </Card>
 
         {errors.carbonSubtitles && (
           <Card className="mb-6 border-l-4 border-status-danger" hoverable={false}>
-            <p className="text-sm text-status-danger" role="alert">{errors.carbonSubtitles}</p>
+            <p className="text-sm text-status-danger" role="alert">
+              {errors.carbonSubtitles}
+            </p>
           </Card>
         )}
 
-        {loading.carbonSubtitles && <Loader size="lg" message="AI is analyzing the carbon cost of this URL..." />}
+        {loading.carbonSubtitles && (
+          <Loader size="lg" message="AI is analyzing the carbon cost of this URL..." />
+        )}
 
         {result && !loading.carbonSubtitles && (
           <SubtitleResultCard result={result} prefersReducedMotion={prefersReducedMotion} />
@@ -111,10 +135,15 @@ export default function CarbonSubtitlesPage() {
 
         {!result && !loading.carbonSubtitles && !errors.carbonSubtitles && (
           <div className="text-center py-16">
-            <span className="text-6xl block mb-4" aria-hidden="true">🔍</span>
-            <h2 className="text-xl font-bold text-text-primary mb-2">See the carbon cost of any choice</h2>
+            <span className="text-6xl block mb-4" aria-hidden="true">
+              🔍
+            </span>
+            <h2 className="text-xl font-bold text-text-primary mb-2">
+              See the carbon cost of any choice
+            </h2>
             <p className="text-text-secondary max-w-md mx-auto">
-              Paste a URL from any online store, food delivery app, or service. AI will estimate the carbon footprint and suggest greener alternatives.
+              Paste a URL from any online store, food delivery app, or service. AI will estimate the
+              carbon footprint and suggest greener alternatives.
             </p>
           </div>
         )}

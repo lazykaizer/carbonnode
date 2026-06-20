@@ -25,7 +25,11 @@ export default defineConfig({
       output: {
         manualChunks(id: string) {
           if (id.includes('node_modules')) {
-            if (id.includes('react/') || id.includes('react-dom/') || id.includes('react-router-dom/')) {
+            if (
+              id.includes('react/') ||
+              id.includes('react-dom/') ||
+              id.includes('react-router-dom/')
+            ) {
               return 'react-vendor';
             }
             if (id.includes('zustand')) {
@@ -56,9 +60,7 @@ export default defineConfig({
         'src/stores/**',
         'src/hooks/**',
       ],
-      exclude: [
-        'src/hooks/useParticles.ts',
-      ],
+      exclude: ['src/hooks/useParticles.ts'],
       thresholds: {
         statements: 85,
         branches: 85,

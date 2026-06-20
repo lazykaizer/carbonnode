@@ -1,3 +1,4 @@
+/** Input validation functions used by forms and API middleware. Returns structured result objects, never throws. */
 import {
   MAX_FILE_SIZE_BYTES,
   ALLOWED_FILE_TYPES,
@@ -104,7 +105,10 @@ export function validateCarbonAmount(amount: number): ValidationResult {
   }
 
   if (amount > MAX_REASONABLE_DAILY_KG) {
-    return { isValid: false, error: `Amount seems too high. Maximum ${MAX_REASONABLE_DAILY_KG} kg per entry.` };
+    return {
+      isValid: false,
+      error: `Amount seems too high. Maximum ${MAX_REASONABLE_DAILY_KG} kg per entry.`,
+    };
   }
 
   return { isValid: true, error: null };

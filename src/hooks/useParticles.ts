@@ -12,7 +12,7 @@ interface Particle {
 
 export function useParticles(
   canvasRef: React.RefObject<HTMLCanvasElement | null>,
-  enabled: boolean
+  enabled: boolean,
 ) {
   useEffect(() => {
     if (!enabled) return;

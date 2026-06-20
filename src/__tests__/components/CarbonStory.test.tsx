@@ -1,3 +1,4 @@
+import { axe } from 'vitest-axe';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import CarbonStory from '@/components/gamification/CarbonStory';
@@ -15,6 +16,26 @@ vi.mock('@/services/geminiService', () => ({
 }));
 
 describe('CarbonStory Component Tests', () => {
+  it('has no axe accessibility violations', async () => {
+    (useWeeklyStats as import('vitest').Mock).mockReturnValue({
+      weeklyStats: {
+        totalCo2Kg: 20,
+        vsIndianAverage: 'below',
+        percentageVsAverage: 40,
+        bestCategory: 'food',
+        worstCategory: 'transport',
+        streakDays: 3,
+        actionsLogged: 5,
+        topActivity: 'Metro ride',
+        weekNumber: 1,
+      },
+      uniqueLogDays: 2,
+    });
+    const { container } = render(<CarbonStory />);
+    const results = await axe(container);
+    expect(results.violations).toEqual([]);
+  });
+
   beforeEach(() => {
     vi.clearAllMocks();
     useGamificationStore.getState().resetGamification();
@@ -64,7 +85,7 @@ describe('CarbonStory Component Tests', () => {
       story: 'You saved the planet this week with metro travel!',
       highlightStat: '12kg CO2 saved',
       weekRating: 'excellent' as const,
-      nextWeekTip: 'Eat vegetarian twice next week.'
+      nextWeekTip: 'Eat vegetarian twice next week.',
     };
     (generateCarbonStory as import('vitest').Mock).mockResolvedValueOnce(mockStoryResult);
 
@@ -82,7 +103,9 @@ describe('CarbonStory Component Tests', () => {
     expect(screen.getAllByText(/writing your weekly carbon story/i)[0]).toBeInTheDocument();
 
     // Wait for the async result to render
-    const storyTexts = await screen.findAllByText(/You saved the planet this week with metro travel!/i);
+    const storyTexts = await screen.findAllByText(
+      /You saved the planet this week with metro travel!/i,
+    );
     expect(storyTexts[0]).toBeInTheDocument();
     expect(screen.getAllByText('12kg CO2 saved')[0]).toBeInTheDocument();
     expect(screen.getAllByText('Eat vegetarian twice next week.')[0]).toBeInTheDocument();

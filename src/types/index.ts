@@ -1,3 +1,4 @@
+/** TypeScript types derived from Zod schemas in src/schemas/index.ts. Import types from here throughout the app — never redefine them inline. */
 import { z } from 'zod';
 import {
   CarbonCategorySchema,

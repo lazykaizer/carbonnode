@@ -45,13 +45,17 @@ export default function Testimonials() {
         <div
           className={[
             'text-center mb-16 transition-all duration-700 ease-out transform',
-            prefersReducedMotion ? '' : (isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8')
+            prefersReducedMotion
+              ? ''
+              : isInView
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 translate-y-8',
           ].join(' ')}
         >
           <span
             className={[
               'inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-bg text-brand-primary text-sm font-semibold mb-4 transition-transform duration-300',
-              prefersReducedMotion ? '' : 'hover:scale-105'
+              prefersReducedMotion ? '' : 'hover:scale-105',
             ].join(' ')}
           >
             💬 What People Say
@@ -60,8 +64,7 @@ export default function Testimonials() {
             id="testimonials-heading"
             className="text-3xl sm:text-4xl lg:text-5xl font-bold text-text-primary mt-3"
           >
-            Loved by{' '}
-            <span className="gradient-text">Eco Warriors</span>
+            Loved by <span className="gradient-text">Eco Warriors</span>
           </h2>
           <p className="text-text-secondary mt-4 max-w-xl mx-auto text-lg">
             Join thousands who are already tracking and reducing their carbon footprint.
@@ -79,12 +82,17 @@ export default function Testimonials() {
                   : isInView
                     ? 'opacity-100 translate-y-0'
                     : 'opacity-0 translate-y-10',
-                prefersReducedMotion ? '' : 'hover:-translate-y-1.5 transition-transform duration-300',
-                idx === 1 ? 'delay-[150ms]' : idx === 2 ? 'delay-[300ms]' : ''
+                prefersReducedMotion
+                  ? ''
+                  : 'hover:-translate-y-1.5 transition-transform duration-300',
+                idx === 1 ? 'delay-[150ms]' : idx === 2 ? 'delay-[300ms]' : '',
               ].join(' ')}
             >
               {/* Quote mark */}
-              <div className="absolute top-6 right-6 text-5xl text-brand-accent/15 font-serif leading-none" aria-hidden="true">
+              <div
+                className="absolute top-6 right-6 text-5xl text-brand-accent/15 font-serif leading-none"
+                aria-hidden="true"
+              >
                 "
               </div>
 
@@ -95,10 +103,16 @@ export default function Testimonials() {
                     key={i}
                     className={[
                       'text-yellow-400 text-sm transition-all duration-300 transform',
-                      prefersReducedMotion ? '' : (isInView ? 'scale-100 opacity-100' : 'scale-0 opacity-0')
+                      prefersReducedMotion
+                        ? ''
+                        : isInView
+                          ? 'scale-100 opacity-100'
+                          : 'scale-0 opacity-0',
                     ].join(' ')}
                     style={{
-                      transitionDelay: prefersReducedMotion ? '0ms' : `${idx * 150 + i * 50 + 300}ms`
+                      transitionDelay: prefersReducedMotion
+                        ? '0ms'
+                        : `${idx * 150 + i * 50 + 300}ms`,
                     }}
                   >
                     ★
@@ -106,9 +120,7 @@ export default function Testimonials() {
                 ))}
               </div>
 
-              <p className="text-text-secondary leading-relaxed mb-6 relative z-10">
-                "{t.text}"
-              </p>
+              <p className="text-text-secondary leading-relaxed mb-6 relative z-10">"{t.text}"</p>
 
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-brand-bg flex items-center justify-center text-2xl shadow-sm">

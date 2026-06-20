@@ -1,10 +1,11 @@
-import type { CarbonCategory, UserLevel, Badge, CategoryBudget, WorldVisualConfig } from '@/types';
+/** Application-wide named constants derived from emission factors and configuration. No raw numbers anywhere else in the app. */
+import type { Badge, WorldVisualConfig } from '@/types';
 import {
   INDIA_URBAN_ANNUAL_TONS,
   INDIA_URBAN_MONTHLY_KG,
   INDIA_URBAN_DAILY_KG,
   CAR_PETROL_KG_PER_KM,
-  CO2_PER_TREE_KG_PER_YEAR
+  CO2_PER_TREE_KG_PER_YEAR,
 } from './emissionFactors';
 
 /** ─── App Info ────────────────────────────────────────────── */
@@ -22,55 +23,8 @@ export const AVERAGE_INDIAN_DAILY_CO2_KG = INDIA_URBAN_DAILY_KG;
 
 export const DEFAULT_MONTHLY_BUDGET_KG = INDIA_URBAN_MONTHLY_KG;
 
-export const CATEGORY_LABELS: Record<CarbonCategory, string> = {
-  transport: 'Transport',
-  food: 'Food & Dining',
-  energy: 'Energy',
-  shopping: 'Shopping',
-  other: 'Other',
-};
-
-export const CATEGORY_ICONS: Record<CarbonCategory, string> = {
-  transport: '🚗',
-  food: '🍽️',
-  energy: '⚡',
-  shopping: '🛍️',
-  other: '📦',
-};
-
-export const CATEGORY_COLORS: Record<CarbonCategory, string> = {
-  transport: '#3b82f6',
-  food: '#f59e0b',
-  energy: '#8b5cf6',
-  shopping: '#ec4899',
-  other: '#6b7280',
-};
-
-export const DEFAULT_CATEGORY_BUDGETS: CategoryBudget[] = [
-  { category: 'transport', limitKg: 50, usedKg: 0 },
-  { category: 'food', limitKg: 40, usedKg: 0 },
-  { category: 'energy', limitKg: 30, usedKg: 0 },
-  { category: 'shopping', limitKg: 20, usedKg: 0 },
-  { category: 'other', limitKg: 10, usedKg: 0 },
-];
-
-/** ─── XP System ───────────────────────────────────────────── */
-
-export const XP_REWARDS = {
-  daily_log: 10,
-  receipt_scan: 15,
-  under_budget: 25,
-  streak_7day: 50,
-  story_collector: 30,
-} as const;
-
-export const USER_LEVELS: UserLevel[] = [
-  { name: 'Carbon Rookie', emoji: '🌱', minXp: 0, maxXp: 100 },
-  { name: 'Eco Aware', emoji: '🌿', minXp: 101, maxXp: 300 },
-  { name: 'Green Warrior', emoji: '🌳', minXp: 301, maxXp: 600 },
-  { name: 'Planet Guardian', emoji: '🌍', minXp: 601, maxXp: 1000 },
-  { name: 'Carbon Legend', emoji: '⚡', minXp: 1001, maxXp: Infinity },
-];
+export * from './categories';
+export * from './levels';
 
 export const DEFAULT_BADGES: Badge[] = [
   {

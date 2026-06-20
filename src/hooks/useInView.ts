@@ -8,7 +8,7 @@ interface UseInViewOptions {
 
 export function useInView(
   ref: RefObject<HTMLElement | null>,
-  { once = false, margin = '0px', threshold = 0 }: UseInViewOptions = {}
+  { once = false, margin = '0px', threshold = 0 }: UseInViewOptions = {},
 ): boolean {
   const [isInView, setIsInView] = useState(false);
 
@@ -30,7 +30,7 @@ export function useInView(
       {
         rootMargin: margin,
         threshold,
-      }
+      },
     );
 
     observer.observe(element);

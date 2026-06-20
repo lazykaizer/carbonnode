@@ -1,3 +1,4 @@
+/** Derives per-day carbon timeline data from the carbon store for chart display. Pure transformation, no side effects. */
 import { useState, useMemo } from 'react';
 import { useCarbonStore } from '@/stores/carbonStore';
 import { INDIA_URBAN_DAILY_KG } from '@/utils/emissionFactors';
@@ -32,7 +33,7 @@ export function useDailyTimeline() {
 
     // Find chronological order to flag 'First Entry' milestone
     const sortedLoggedDays = Object.keys(groups).sort(
-      (a, b) => new Date(a).getTime() - new Date(b).getTime()
+      (a, b) => new Date(a).getTime() - new Date(b).getTime(),
     );
 
     const result: DailyTimelineNode[] = [];
@@ -68,7 +69,7 @@ export function useDailyTimeline() {
 
   const selectedNode = useMemo(
     () => dailyData.find((d) => d.dayStr === selectedDayStr) ?? null,
-    [dailyData, selectedDayStr]
+    [dailyData, selectedDayStr],
   );
 
   const maxVal = useMemo(() => {

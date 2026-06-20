@@ -1,9 +1,5 @@
-import { useMemo } from 'react';
-import { useCarbonStore } from '@/stores/carbonStore';
-import { getWorldStateFromBudget } from '@/services/carbonCalculator';
-import { WORLD_STATES } from '@/utils/constants';
 import { usePrefersReducedMotion } from '@/hooks/useMediaQuery';
-import type { WorldVisualConfig } from '@/types';
+import { useWorldVisual } from './useWorldVisual';
 
 function TreeSprite({ index, total }: { index: number; total: number }) {
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -14,7 +10,7 @@ function TreeSprite({ index, total }: { index: number; total: number }) {
     <div
       className={[
         'absolute bottom-0 transform origin-bottom',
-        prefersReducedMotion ? 'opacity-100 scale-100' : 'animate-tree-pop'
+        prefersReducedMotion ? 'opacity-100 scale-100' : 'animate-tree-pop',
       ].join(' ')}
       style={{
         left: `${leftPosition}%`,
@@ -22,10 +18,9 @@ function TreeSprite({ index, total }: { index: number; total: number }) {
       }}
     >
       <span
-        className={[
-          'block origin-bottom',
-          prefersReducedMotion ? '' : 'animate-tree-sway'
-        ].join(' ')}
+        className={['block origin-bottom', prefersReducedMotion ? '' : 'animate-tree-sway'].join(
+          ' ',
+        )}
         style={{
           fontSize: `${size}px`,
           animationDuration: `${3 + index * 0.5}s`,
@@ -70,7 +65,7 @@ function SunElement({ opacity }: { opacity: number }) {
     <div
       className={[
         'absolute top-4 right-8 transition-all duration-[1500ms] ease-in-out',
-        prefersReducedMotion ? '' : 'animate-sun-pulse'
+        prefersReducedMotion ? '' : 'animate-sun-pulse',
       ].join(' ')}
       style={{ opacity }}
       aria-hidden="true"
@@ -96,43 +91,7 @@ function GrassGround() {
 
 export default function WorldVisual() {
   const prefersReducedMotion = usePrefersReducedMotion();
-  const { getBudgetPercentage } = useCarbonStore();
-
-  const budgetPercentage = getBudgetPercentage();
-
-  const worldState = useMemo(
-    () => getWorldStateFromBudget(budgetPercentage),
-    [budgetPercentage]
-  );
-
-  const config: WorldVisualConfig = useMemo(
-    () => WORLD_STATES[worldState],
-    [worldState]
-  );
-
-  const treeArray = useMemo(
-    () => Array.from({ length: config.treeCount }, (_, i) => i),
-    [config.treeCount]
-  );
-
-  const smogArray = useMemo(
-    () => config.showSmog ? [0, 1, 2] : [],
-    [config.showSmog]
-  );
-
-  const stateLabels: Record<string, string> = {
-    pristine: 'Excellent! Your carbon footprint is very low.',
-    good: "Good job! You're below your budget.",
-    warning: "Careful — you're approaching your carbon budget.",
-    danger: 'Over budget! Time to make greener choices.',
-  };
-
-  const ariaLabels: Record<string, string> = {
-    pristine: "Carbon world status: Pristine. Clean air and healthy ecosystem. Your emissions are well within budget.",
-    good: "Carbon world status: Good. Moderate emissions, trees are present.",
-    warning: "Carbon world status: Warning. High emissions, ecosystem is stressed.",
-    danger: "Carbon world status: Danger. Critical emissions, heavy smog affecting the biosphere.",
-  };
+  const { worldState, config, treeArray, smogArray, stateLabels, ariaLabels } = useWorldVisual();
 
   return (
     <div
@@ -169,14 +128,14 @@ export default function WorldVisual() {
           <div
             className={[
               'absolute top-6 left-1/4 w-16 h-6 bg-white/40 rounded-full blur-sm',
-              prefersReducedMotion ? '' : 'animate-cloud-drift-1'
+              prefersReducedMotion ? '' : 'animate-cloud-drift-1',
             ].join(' ')}
             aria-hidden="true"
           />
           <div
             className={[
               'absolute top-12 right-1/3 w-20 h-7 bg-white/30 rounded-full blur-sm',
-              prefersReducedMotion ? '' : 'animate-cloud-drift-2'
+              prefersReducedMotion ? '' : 'animate-cloud-drift-2',
             ].join(' ')}
             aria-hidden="true"
           />
@@ -190,11 +149,7 @@ export default function WorldVisual() {
 
       {/* Trees */}
       {treeArray.map((index) => (
-        <TreeSprite
-          key={`tree-${index}`}
-          index={index}
-          total={config.treeCount}
-        />
+        <TreeSprite key={`tree-${index}`} index={index} total={config.treeCount} />
       ))}
 
       {/* Ground */}

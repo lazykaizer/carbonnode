@@ -13,7 +13,7 @@ export default function FeatureGrid({ children }: FeatureGridProps) {
     <div
       className={[
         'grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6',
-        prefersReducedMotion ? '' : 'animate-fade-in fill-both'
+        prefersReducedMotion ? '' : 'animate-fade-in fill-both',
       ].join(' ')}
       style={{ animationDelay: '200ms', animationDuration: '500ms' }}
     >
@@ -51,7 +51,9 @@ export function FeatureCardShell({
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <span className="text-2xl" aria-hidden="true">{icon}</span>
+          <span className="text-2xl" aria-hidden="true">
+            {icon}
+          </span>
           <h3 className="text-lg font-bold text-text-primary">{title}</h3>
         </div>
         {headerAction}

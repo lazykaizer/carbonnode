@@ -1,3 +1,4 @@
+/** Emission factors in kg CO₂e per unit, each citing its primary source. These are the only place raw numbers appear — all other files import named constants from here. */
 // ═══ TRANSPORT ═══
 // Source: IPCC 2023 Working Group III Table 10.1
 export const FLIGHT_SHORT_HAUL_KG_PER_KM = 0.089;
@@ -6,7 +7,7 @@ export const FLIGHT_SHORT_HAUL_KG_PER_KM = 0.089;
 export const CAR_PETROL_KG_PER_KM = 0.171;
 export const CAR_DIESEL_KG_PER_KM = 0.163;
 export const CAR_EV_KG_PER_KM = 0.053;
-export const TWO_WHEELER_INDIA_KG_PER_KM = 0.080;
+export const TWO_WHEELER_INDIA_KG_PER_KM = 0.08;
 
 // Source: Indian Railways GHG Inventory 2022
 export const TRAIN_INDIA_KG_PER_KM = 0.012;
@@ -25,10 +26,10 @@ export const EGGS_KG_CO2_PER_KG = 4.5;
 export const FISH_KG_CO2_PER_KG = 5.1;
 
 // Portion factors for meals in Indian households (in kg CO₂ per meal)
-export const MEAL_BEEF_KG = 7.2;       // 120g red meat portion
-export const MEAL_CHICKEN_KG = 1.8;    // 260g poultry/fish portion
-export const MEAL_VEG_KG = 0.6;        // 300g vegetarian portion
-export const MEAL_VEGAN_KG = 0.4;      // 100g rice/grain portion
+export const MEAL_BEEF_KG = 7.2; // 120g red meat portion
+export const MEAL_CHICKEN_KG = 1.8; // 260g poultry/fish portion
+export const MEAL_VEG_KG = 0.6; // 300g vegetarian portion
+export const MEAL_VEGAN_KG = 0.4; // 100g rice/grain portion
 
 // ═══ ENERGY ═══
 // Source: CEA India Grid Emission Factor 2023

@@ -1,3 +1,4 @@
+import { axe } from 'vitest-axe';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import WorldVisual from '@/components/dashboard/WorldVisual';
@@ -9,6 +10,15 @@ vi.mock('@/stores/carbonStore', () => ({
 }));
 
 describe('LivingWorld WorldVisual Component Tests', () => {
+  it('has no axe accessibility violations', async () => {
+    (useCarbonStore as unknown as import('vitest').Mock).mockReturnValue({
+      getBudgetPercentage: () => 15,
+    });
+    const { container } = render(<WorldVisual />);
+    const results = await axe(container);
+    expect(results.violations).toEqual([]);
+  });
+
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -16,7 +26,7 @@ describe('LivingWorld WorldVisual Component Tests', () => {
   it('renders pristine biosphere with 6 trees and no smog when carbon budget is low', () => {
     // Proves that under 30% budget, the pristine state renders 6 tree emojis and no smog particles
     (useCarbonStore as unknown as import('vitest').Mock).mockReturnValue({
-      getBudgetPercentage: () => 15
+      getBudgetPercentage: () => 15,
     });
 
     render(<WorldVisual />);
@@ -32,7 +42,7 @@ describe('LivingWorld WorldVisual Component Tests', () => {
   it('renders good biosphere with 4 trees when carbon budget is moderate', () => {
     // Proves that under 60% budget, the good state renders 4 tree emojis
     (useCarbonStore as unknown as import('vitest').Mock).mockReturnValue({
-      getBudgetPercentage: () => 45
+      getBudgetPercentage: () => 45,
     });
 
     render(<WorldVisual />);
@@ -45,20 +55,22 @@ describe('LivingWorld WorldVisual Component Tests', () => {
   it('renders warning biosphere with 2 trees when carbon budget is high', () => {
     // Proves that under 85% budget, the warning state renders 2 tree emojis
     (useCarbonStore as unknown as import('vitest').Mock).mockReturnValue({
-      getBudgetPercentage: () => 75
+      getBudgetPercentage: () => 75,
     });
 
     render(<WorldVisual />);
 
     const trees = screen.getAllByText('🌳');
     expect(trees.length).toBe(2);
-    expect(screen.getByText(/careful — you're approaching your carbon budget/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/careful — you're approaching your carbon budget/i),
+    ).toBeInTheDocument();
   });
 
   it('renders danger biosphere with 0 trees and smog warning when carbon budget is critical', () => {
     // Proves that over 85% budget, the danger state renders 0 trees and is labelled appropriately
     (useCarbonStore as unknown as import('vitest').Mock).mockReturnValue({
-      getBudgetPercentage: () => 95
+      getBudgetPercentage: () => 95,
     });
 
     render(<WorldVisual />);

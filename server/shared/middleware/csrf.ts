@@ -10,7 +10,7 @@ const ALLOWED_ORIGINS = [
 
 /**
  * Custom Stateless CSRF Protection Middleware.
- * 
+ *
  * WHY:
  * 1. This application is stateless and anonymous (no cookie-based sessions or JWT cookies).
  * 2. However, a malicious site could still attempt to trigger costly Gemini API proxy requests
@@ -62,7 +62,8 @@ export function csrfProtection(req: Request, res: Response, next: NextFunction):
 
   if (!hasCustomHeader) {
     res.status(403).json({
-      error: 'CSRF Protection: Missing required custom request headers (X-Requested-With / X-CSRF-Token).',
+      error:
+        'CSRF Protection: Missing required custom request headers (X-Requested-With / X-CSRF-Token).',
     });
     return;
   }

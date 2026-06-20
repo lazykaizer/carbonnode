@@ -1,3 +1,4 @@
+import { axe } from 'vitest-axe';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import CarbonMirrorCard from '@/components/carbon-mirror/CarbonMirrorCard';
@@ -10,16 +11,20 @@ vi.mock('@/services/geminiService', () => ({
 }));
 
 describe('CarbonMirrorCard Component Tests', () => {
+  it('has no axe accessibility violations', async () => {
+    const { container } = render(<CarbonMirrorCard />);
+    const results = await axe(container);
+    expect(results.violations).toEqual([]);
+  });
+
   const mockStream = {
-    getTracks: vi.fn(() => [
-      { stop: vi.fn() }
-    ])
+    getTracks: vi.fn(() => [{ stop: vi.fn() }]),
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
     useCarbonStore.getState().clearAllEntries();
-    
+
     // Mock getUserMedia
     Object.defineProperty(global.navigator, 'mediaDevices', {
       writable: true,
@@ -33,9 +38,14 @@ describe('CarbonMirrorCard Component Tests', () => {
     // Proves that entering daily text and clicking analyze calls the API and saves the resulting carbon activities
     const mockAnalysisResult = {
       activities: [
-        { name: 'Commuted by car', category: 'transport' as const, co2Kg: 2.5, suggestion: 'Take train' }
+        {
+          name: 'Commuted by car',
+          category: 'transport' as const,
+          co2Kg: 2.5,
+          suggestion: 'Take train',
+        },
       ],
-      overallSuggestion: 'Overall good day'
+      overallSuggestion: 'Overall good day',
     };
     (analyzeDailyActivity as import('vitest').Mock).mockResolvedValueOnce(mockAnalysisResult);
 
@@ -51,11 +61,14 @@ describe('CarbonMirrorCard Component Tests', () => {
     expect(screen.getAllByText(/ai is analyzing your day/i)[0]).toBeInTheDocument();
 
     // Verify results show up
-    await waitFor(() => {
-      expect(screen.getByText('Commuted by car')).toBeInTheDocument();
-      expect(screen.getByText('2.5 kg')).toBeInTheDocument();
-      expect(screen.getByText(/take train/i)).toBeInTheDocument();
-    }, { timeout: 3000 });
+    await waitFor(
+      () => {
+        expect(screen.getByText('Commuted by car')).toBeInTheDocument();
+        expect(screen.getByText('2.5 kg')).toBeInTheDocument();
+        expect(screen.getByText(/take train/i)).toBeInTheDocument();
+      },
+      { timeout: 3000 },
+    );
 
     expect(useCarbonStore.getState().entries.length).toBe(1);
     expect(useCarbonStore.getState().entries[0].activityName).toBe('Commuted by car');
@@ -95,10 +108,15 @@ describe('CarbonMirrorCard Component Tests', () => {
     // Proves that clicking Capture stops the stream and submits the default captured text description
     const mockAnalysisResult = {
       activities: [
-        { name: 'Commuted by Metro', category: 'transport' as const, co2Kg: 0.3, suggestion: 'Good' },
-        { name: 'Vegetarian Meal', category: 'food' as const, co2Kg: 0.6, suggestion: 'Excellent' }
+        {
+          name: 'Commuted by Metro',
+          category: 'transport' as const,
+          co2Kg: 0.3,
+          suggestion: 'Good',
+        },
+        { name: 'Vegetarian Meal', category: 'food' as const, co2Kg: 0.6, suggestion: 'Excellent' },
       ],
-      overallSuggestion: 'Excellent daily footprint!'
+      overallSuggestion: 'Excellent daily footprint!',
     };
     (analyzeDailyActivity as import('vitest').Mock).mockResolvedValueOnce(mockAnalysisResult);
 
@@ -111,7 +129,9 @@ describe('CarbonMirrorCard Component Tests', () => {
     fireEvent.click(captureBtn);
 
     // API should be called with default captured scene content
-    expect(analyzeDailyActivity).toHaveBeenCalledWith('I rode the metro to work and ate a vegetarian meal.');
+    expect(analyzeDailyActivity).toHaveBeenCalledWith(
+      'I rode the metro to work and ate a vegetarian meal.',
+    );
 
     // Wait for results
     await waitFor(() => {

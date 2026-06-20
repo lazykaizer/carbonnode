@@ -27,7 +27,7 @@ describe('Backend Unit, Middleware & Router Tests', () => {
 
   describe('1. Zod Schema Validation Middleware (validateSchema)', () => {
     const testSchema = CarbonMirrorRequestSchema;
-    
+
     it('returns 400 bad request and does not call next when input is invalid', async () => {
       // Proves that Zod validation middleware intercepts invalid inputs and returns a 400 JSON error
       const app = express();
@@ -52,7 +52,7 @@ describe('Backend Unit, Middleware & Router Tests', () => {
       const response = await request(app)
         .post('/test')
         .send({ text: '<script>alert("hacked")</script>Hello', extra: 'field' });
-      
+
       expect(response.status).toBe(200);
       expect(response.body.body.text).toBe('alert(&quot;hacked&quot;)Hello');
       expect(response.body.body.extra).toBeUndefined(); // Extra fields must be stripped
@@ -69,7 +69,7 @@ describe('Backend Unit, Middleware & Router Tests', () => {
       });
 
       const ip = '1.2.3.4';
-      
+
       // Make 15 requests (the limit)
       for (let i = 0; i < 15; i++) {
         const res = await request(app).get('/test-limit').set('X-Forwarded-For', ip);
@@ -109,8 +109,10 @@ describe('Backend Unit, Middleware & Router Tests', () => {
   });
 
   describe('3. Receipt Upload Middleware (validateReceiptUpload)', () => {
-    const validPngBase64 = Buffer.from([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]).toString('base64');
-    
+    const validPngBase64 = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]).toString(
+      'base64',
+    );
+
     it('allows valid image signatures and sanitizes filename path traversals', async () => {
       // Proves that upload middleware accepts genuine image magic bytes and strips folder navigation dots from filenames
       const app = express();
@@ -119,13 +121,11 @@ describe('Backend Unit, Middleware & Router Tests', () => {
         res.json({ success: true, mimeType: req.body.mimeType, filename: req.body.filename });
       });
 
-      const response = await request(app)
-        .post('/upload')
-        .send({
-          image: validPngBase64,
-          mimeType: 'image/png',
-          filename: '../../receipt.png'
-        });
+      const response = await request(app).post('/upload').send({
+        image: validPngBase64,
+        mimeType: 'image/png',
+        filename: '../../receipt.png',
+      });
 
       expect(response.status).toBe(200);
       expect(response.body.filename).toBe('receipt.png');
@@ -138,21 +138,23 @@ describe('Backend Unit, Middleware & Router Tests', () => {
       const req = {
         body: {
           image: largeBase64,
-          mimeType: 'image/png'
-        }
+          mimeType: 'image/png',
+        },
       } as unknown as Request;
       const res = {
         status: vi.fn().mockReturnThis(),
-        json: vi.fn()
+        json: vi.fn(),
       } as unknown as Response;
       const next = vi.fn();
 
       validateReceiptUpload(req, res, next);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-        error: expect.stringContaining('Payload size exceeds limit')
-      }));
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          error: expect.stringContaining('Payload size exceeds limit'),
+        }),
+      );
       expect(next).not.toHaveBeenCalled();
     });
 
@@ -164,12 +166,10 @@ describe('Backend Unit, Middleware & Router Tests', () => {
         res.json({ success: true });
       });
 
-      const response = await request(app)
-        .post('/upload')
-        .send({
-          image: validPngBase64,
-          mimeType: 'image/jpeg'
-        });
+      const response = await request(app).post('/upload').send({
+        image: validPngBase64,
+        mimeType: 'image/jpeg',
+      });
 
       expect(response.status).toBe(400);
       expect(response.body.error).toContain('MIME type does not match actual image signature');
@@ -184,12 +184,10 @@ describe('Backend Unit, Middleware & Router Tests', () => {
       });
 
       const badBase64 = Buffer.from('not-an-image-file').toString('base64');
-      const response = await request(app)
-        .post('/upload')
-        .send({
-          image: badBase64,
-          mimeType: 'image/png'
-        });
+      const response = await request(app).post('/upload').send({
+        image: badBase64,
+        mimeType: 'image/png',
+      });
 
       expect(response.status).toBe(400);
       expect(response.body.error).toContain('failed signature check');
@@ -212,10 +210,10 @@ describe('Backend Unit, Middleware & Router Tests', () => {
         const mockResponse = {
           activities: [{ name: 'Test', co2Kg: 1.2, category: 'other', suggestion: 'Tip' }],
           totalCo2Kg: 1.2,
-          overallSuggestion: 'Overall tip'
+          overallSuggestion: 'Overall tip',
         };
         mockModel.generateContent.mockResolvedValueOnce({
-          response: { text: () => JSON.stringify(mockResponse) }
+          response: { text: () => JSON.stringify(mockResponse) },
         });
 
         const app = express();
@@ -258,10 +256,10 @@ describe('Backend Unit, Middleware & Router Tests', () => {
         const mockResponse = {
           items: [{ name: 'apples', quantity: 1, co2Kg: 0.2 }],
           totalCo2Kg: 0.2,
-          storeName: 'Grocery Store'
+          storeName: 'Grocery Store',
         };
         mockModel.generateContent.mockResolvedValueOnce({
-          response: { text: () => JSON.stringify(mockResponse) }
+          response: { text: () => JSON.stringify(mockResponse) },
         });
 
         const app = express();
@@ -287,10 +285,10 @@ describe('Backend Unit, Middleware & Router Tests', () => {
           co2Kg: 2.5,
           alternative: 'Local store',
           alternativeCo2Kg: 0.5,
-          explanation: 'Logistics footprint is high.'
+          explanation: 'Logistics footprint is high.',
         };
         mockModel.generateContent.mockResolvedValueOnce({
-          response: { text: () => JSON.stringify(mockResponse) }
+          response: { text: () => JSON.stringify(mockResponse) },
         });
 
         const app = express();
@@ -317,7 +315,7 @@ describe('Backend Unit, Middleware & Router Tests', () => {
         streakDays: 5,
         actionsLogged: 12,
         topActivity: 'Metro ride',
-        weekNumber: 1
+        weekNumber: 1,
       };
 
       it('returns generated story on model success', async () => {
@@ -327,19 +325,17 @@ describe('Backend Unit, Middleware & Router Tests', () => {
           story: 'Great week of green decisions.',
           highlightStat: '40kg logged',
           weekRating: 'good',
-          nextWeekTip: 'Eat veggies'
+          nextWeekTip: 'Eat veggies',
         };
         mockModel.generateContent.mockResolvedValueOnce({
-          response: { text: () => JSON.stringify(mockResponse) }
+          response: { text: () => JSON.stringify(mockResponse) },
         });
 
         const app = express();
         app.use(express.json());
         app.use('/api/carbon-story', storyRouter);
 
-        const response = await request(app)
-          .post('/api/carbon-story')
-          .send(validWeekData);
+        const response = await request(app).post('/api/carbon-story').send(validWeekData);
 
         expect(response.status).toBe(200);
         expect(response.body.story).toBe('Great week of green decisions.');

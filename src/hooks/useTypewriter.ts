@@ -4,7 +4,7 @@ export function useTypewriter(
   words: string[],
   typingSpeed = 80,
   deletingSpeed = 50,
-  pause = 2000
+  pause = 2000,
 ): string {
   const [text, setText] = useState('');
   const [wordIndex, setWordIndex] = useState(0);
@@ -28,7 +28,7 @@ export function useTypewriter(
           }
         }
       },
-      isDeleting ? deletingSpeed : typingSpeed
+      isDeleting ? deletingSpeed : typingSpeed,
     );
 
     return () => clearTimeout(timeout);

@@ -17,21 +17,25 @@ export default function CarbonBudgetCard() {
   const [editLimit, setEditLimit] = useState('');
   const [editError, setEditError] = useState<string | null>(null);
 
-  const { categoryBudgets, getCategoryTotal, updateBudgetLimit, getTotalMonthlyUsage } = useCarbonStore();
+  const { categoryBudgets, getCategoryTotal, updateBudgetLimit, getTotalMonthlyUsage } =
+    useCarbonStore();
 
   const totalUsed = getTotalMonthlyUsage();
   const totalLimit = useMemo(
     () => categoryBudgets.reduce((sum, budget) => sum + budget.limitKg, 0),
-    [categoryBudgets]
+    [categoryBudgets],
   );
 
-  const handleEditBudget = useCallback((category: CarbonCategory) => {
-    const currentBudget = categoryBudgets.find((b) => b.category === category);
-    setEditCategory(category);
-    setEditLimit(currentBudget ? String(currentBudget.limitKg) : '');
-    setEditError(null);
-    setIsEditModalOpen(true);
-  }, [categoryBudgets]);
+  const handleEditBudget = useCallback(
+    (category: CarbonCategory) => {
+      const currentBudget = categoryBudgets.find((b) => b.category === category);
+      setEditCategory(category);
+      setEditLimit(currentBudget ? String(currentBudget.limitKg) : '');
+      setEditError(null);
+      setIsEditModalOpen(true);
+    },
+    [categoryBudgets],
+  );
 
   const handleSaveBudget = useCallback(() => {
     const limit = parseFloat(editLimit);
@@ -146,19 +150,10 @@ export default function CarbonBudgetCard() {
           </div>
 
           <div className="flex gap-3">
-            <Button
-              onClick={handleSaveBudget}
-              size="sm"
-              fullWidth
-            >
+            <Button onClick={handleSaveBudget} size="sm" fullWidth>
               Save
             </Button>
-            <Button
-              onClick={() => setIsEditModalOpen(false)}
-              size="sm"
-              variant="outline"
-              fullWidth
-            >
+            <Button onClick={() => setIsEditModalOpen(false)} size="sm" variant="outline" fullWidth>
               Cancel
             </Button>
           </div>

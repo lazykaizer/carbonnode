@@ -33,13 +33,17 @@ export default function FeatureCards() {
         <div
           className={[
             'text-center mb-20 transition-all duration-700 ease-out transform',
-            prefersReducedMotion ? '' : (isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8')
+            prefersReducedMotion
+              ? ''
+              : isInView
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 translate-y-8',
           ].join(' ')}
         >
           <span
             className={[
               'inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-bg text-brand-primary text-sm font-semibold mb-4 transition-transform duration-300',
-              prefersReducedMotion ? '' : 'hover:scale-105'
+              prefersReducedMotion ? '' : 'hover:scale-105',
             ].join(' ')}
           >
             🚀 Five Powerful Features
@@ -48,8 +52,7 @@ export default function FeatureCards() {
             id="features-heading"
             className="text-3xl sm:text-4xl lg:text-5xl font-bold text-text-primary mt-3"
           >
-            Everything You Need to{' '}
-            <span className="gradient-text">Go Green</span>
+            Everything You Need to <span className="gradient-text">Go Green</span>
           </h2>
           <p className="text-text-secondary mt-4 max-w-xl mx-auto text-lg">
             Each feature is designed to change how you think about your carbon footprint.
@@ -68,14 +71,18 @@ export default function FeatureCards() {
                   : isInView
                     ? 'opacity-100 translate-y-0 scale-100'
                     : 'opacity-0 translate-y-12 scale-95',
-                prefersReducedMotion ? '' : `hover:-translate-y-1.5 transition-transform duration-300`,
-                prefersReducedMotion ? '' : delayClasses[index % delayClasses.length]
+                prefersReducedMotion
+                  ? ''
+                  : `hover:-translate-y-1.5 transition-transform duration-300`,
+                prefersReducedMotion ? '' : delayClasses[index % delayClasses.length],
               ].join(' ')}
             >
               {/* Accent gradient top bar */}
               <div
                 className="absolute top-0 left-0 right-0 h-1 transition-all duration-500 group-hover:h-1.5"
-                style={{ background: `linear-gradient(90deg, ${feature.color}, ${feature.color}88)` }}
+                style={{
+                  background: `linear-gradient(90deg, ${feature.color}, ${feature.color}88)`,
+                }}
                 aria-hidden="true"
               />
 
@@ -104,9 +111,7 @@ export default function FeatureCards() {
                   {feature.title}
                 </h3>
 
-                <p className="text-text-secondary leading-relaxed mb-5">
-                  {feature.description}
-                </p>
+                <p className="text-text-secondary leading-relaxed mb-5">{feature.description}</p>
 
                 {/* Hover arrow indicator */}
                 <div
