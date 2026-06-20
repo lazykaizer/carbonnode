@@ -60,6 +60,19 @@ describe('geminiService', () => {
     expect(result).toEqual(mockResponse);
   });
 
+  it('handles non-Error objects thrown during fetch', async () => {
+    vi.useRealTimers();
+    const fetchMock = global.fetch as import('vitest').Mock;
+    fetchMock.mockRejectedValueOnce('String Error').mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ activities: [] }),
+    });
+    
+    const result = await analyzeDailyActivity('test');
+    expect(result).toEqual({ activities: [] });
+    vi.useFakeTimers();
+  });
+
   it('throws FatalError on 429 response', async () => {
     const fetchMock = global.fetch as import('vitest').Mock;
     fetchMock.mockResolvedValueOnce({
@@ -208,5 +221,32 @@ describe('geminiService', () => {
     expect(result).toEqual({ activities: [] });
     // Total 2 attempts (one for the first failed request, one for the second successful one)
     expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('delays between retries', async () => {
+    vi.useRealTimers();
+    const fetchMock = global.fetch as import('vitest').Mock;
+    fetchMock.mockRejectedValueOnce(new Error('Network Error')).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ activities: [] }),
+    });
+    
+    const startTime = Date.now();
+    await analyzeDailyActivity('test');
+    const elapsed = Date.now() - startTime;
+    // Base delay is 500ms, first attempt is 500 * 2^0 = 500ms
+    expect(elapsed).toBeGreaterThanOrEqual(450);
+    vi.useFakeTimers();
+  });
+
+  it('falls back to HTTP error status when response has no error field', async () => {
+    const fetchMock = global.fetch as import('vitest').Mock;
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 403,
+      json: async () => { throw new Error('Not JSON') },
+    });
+
+    await expect(analyzeDailyActivity('test')).rejects.toThrow('HTTP error 403');
   });
 });

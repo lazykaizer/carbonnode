@@ -16,6 +16,12 @@ vi.mock('../../services/geminiService', () => ({
   analyzeReceipt: vi.fn(),
 }));
 
+vi.mock('../../utils/fileUtils', () => ({
+  fileToBase64: vi.fn().mockResolvedValue('base64string'),
+  formatFileSize: vi.fn(),
+  createImagePreviewUrl: vi.fn().mockReturnValue('blob:test'),
+}));
+
 describe('useReceiptScanner', () => {
   it('initializes and reset state', () => {
     const { result } = renderHook(() => useReceiptScanner());
