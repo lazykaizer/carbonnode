@@ -312,24 +312,58 @@ Every domain handler follows the same contract:
 
 ### System Diagram
 
-┌─────────────────────────────────┐ ┌──────────────────────────────────────────┐
-│ Browser (React 19 + TS) │ │ Google Cloud Run │
-│ │ │ │
-│ ┌─────────────────────────┐ │ HTTPS │ ┌───────────────────────────────────┐ │
-│ │ Carbon Mirror │ │────────►│ │ Express 5 Server │ │
-│ │ Receipt Scanner │ │ │ │ │ │
-│ │ Carbon Budget │ │ │ │ server/domain/mirror/handler │ │
-│ │ Carbon Subtitles │ │ │ │ server/domain/receipt/handler ───┼──┼──► Gemini 2.0 Flash
-│ │ Ripple Effect │ │ │ │ server/domain/subtitles/handler │ │
-│ │ Living World │ │ │ │ server/domain/story/handler ────┼──┼──► Gemini Vision
-│ │ Carbon Story │ │ │ │ server/shared/ (middleware, │ │
-│ └─────────────────────────┘ │ │ │ geminiClient, validation) │ │
-│ │ │ └───────────────────────────────────┘ │
-│ State: Zustand + Zod persist │ │ │
-│ Auth: Anonymous by design │ │ ✦ Gemini unavailable → rule-based │
-└─────────────────────────────────┘ │ fallback, app never fails silently │
-└──────────────────────────────────────────┘
-CI/CD: GitHub Actions → coverage artifact → Artifact Registry → Cloud Run (auto-deploy on push to main)
+```mermaid
+graph TD
+    subgraph CI ["🔄 CI/CD Pipeline"]
+        direction LR
+        GH["GitHub Actions"] -->|Test & Coverage| AR["Artifact Registry"] -->|Auto Deploy| CR["Cloud Run"]
+    end
+
+    subgraph Architecture ["🏗️ System Architecture"]
+        direction LR
+        
+        subgraph Client ["📱 Browser (React 19 + TS)"]
+            direction TB
+            Features["✨ App Features<br/>(Mirror, Scanner, Budget, Story)"]
+            State["💾 Zustand + Zod Persist"]
+            Auth["👤 Anonymous by design"]
+        end
+
+        subgraph Server ["☁️ Google Cloud Run"]
+            direction TB
+            Express["🚀 Express 5 API Proxy"]
+            Handlers["🛠️ Domain Handlers"]
+            Middleware["🛡️ Middleware<br/>(Rate Limit, Zod Validation)"]
+            
+            Express --> Middleware --> Handlers
+        end
+
+        subgraph AI ["🧠 External APIs"]
+            Gemini["Google Gemini 2.0 Flash<br/>& Gemini Vision"]
+        end
+        
+        subgraph Fallback ["⚡ Fallback System"]
+            RuleBased["Rule-Based Constants<br/>(App never fails silently)"]
+        end
+
+        Features -- "HTTPS" --> Express
+        Handlers -- "Context-Aware Prompts" --> Gemini
+        Handlers -. "If API Fails / Demo Mode" .-> RuleBased
+    end
+
+    %% Apply styles
+    classDef client fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0c4a6e;
+    classDef server fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d;
+    classDef ai fill:#f3e8ff,stroke:#9333ea,stroke-width:2px,color:#581c87;
+    classDef fallback fill:#ffedd5,stroke:#ea580c,stroke-width:2px,stroke-dasharray: 5 5,color:#7c2d12;
+    classDef pipeline fill:#f1f5f9,stroke:#64748b,stroke-width:2px,color:#0f172a;
+    
+    class Client,Features,State,Auth client;
+    class Server,Express,Handlers,Middleware server;
+    class AI,Gemini ai;
+    class Fallback,RuleBased fallback;
+    class CI,GH,AR,CR pipeline;
+```
 
 ---
 
