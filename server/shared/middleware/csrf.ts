@@ -38,7 +38,7 @@ export function csrfProtection(req: Request, res: Response, next: NextFunction):
   const referer = req.headers.referer;
 
   if (origin) {
-    if (!ALLOWED_ORIGINS.includes(origin)) {
+    if (!ALLOWED_ORIGINS.includes(origin) && !origin.endsWith('.run.app')) {
       res.status(403).json({ error: 'CSRF Protection: Unauthorized request origin.' });
       return;
     }
@@ -46,7 +46,7 @@ export function csrfProtection(req: Request, res: Response, next: NextFunction):
     try {
       const parsedReferer = new URL(referer);
       const refererOrigin = `${parsedReferer.protocol}//${parsedReferer.host}`;
-      if (!ALLOWED_ORIGINS.includes(refererOrigin)) {
+      if (!ALLOWED_ORIGINS.includes(refererOrigin) && !refererOrigin.endsWith('.run.app')) {
         res.status(403).json({ error: 'CSRF Protection: Unauthorized referer origin.' });
         return;
       }
